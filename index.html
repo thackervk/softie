@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Softie: a pixel platformer where a red panda travels the world, dodging lava and spikes.">
+<meta name="description" content="Softie: a pixel platformer where a red panda travels the world and into space, dodging lava and spikes.">
 <meta name="theme-color" content="#170b13">
 <title>Softie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -65,6 +65,7 @@ h1{font-weight:700;font-size:clamp(36px,11vw,52px);color:var(--lava-hi);text-sha
 h2{font-weight:700;font-size:24px;color:var(--lava-hi);text-shadow:2px 2px 0 var(--lava-deep)}
 .tag{margin:0;color:var(--muted);line-height:1.4}
 .levels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.lvhead{grid-column:1/-1;margin:6px 0 0;font-family:var(--display);font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:400}
 .card{appearance:none;text-align:left;border:0;border-radius:6px;padding:10px 12px;background:var(--panel-2);color:var(--ink);box-shadow:inset 0 -4px 0 rgba(0,0,0,.3),0 0 0 2px var(--line);display:flex;flex-direction:column;gap:3px;cursor:pointer;font-family:var(--body);min-width:0}
 .card .n{font-family:var(--display);font-size:11px;color:var(--muted);letter-spacing:.06em}
 .card .nm{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -72,6 +73,12 @@ h2{font-weight:700;font-size:24px;color:var(--lava-hi);text-shadow:2px 2px 0 var
 .card .st{font-size:13px;letter-spacing:2px;color:#5d3b46}
 .card .st .on{color:var(--lava-hi)}
 .card:disabled{opacity:.45;cursor:not-allowed}
+.card.buy .st{color:var(--lava-hi);font-family:var(--display);font-size:11px;letter-spacing:0}
+.card.arm{box-shadow:inset 0 -4px 0 rgba(0,0,0,.3),0 0 0 2px var(--lava-hi)}
+#menuMsg{margin:0}
+#menuBuy{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:6px;background:var(--panel-2);box-shadow:0 0 0 2px var(--lava-hi)}
+#menuBuy p{margin:0;font-size:15px}
+button{touch-action:manipulation}
 .card:not(:disabled):hover{box-shadow:inset 0 -4px 0 rgba(0,0,0,.3),0 0 0 2px var(--lava)}
 .how{margin:0;font-size:13px;line-height:1.45;color:var(--muted)}
 .how kbd{font-family:var(--display);font-size:10px;padding:1px 5px;border-radius:3px;background:var(--panel-2);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
@@ -124,8 +131,10 @@ h3{margin:4px 0 0;font-family:var(--display);font-size:12px;letter-spacing:.08em
     <div class="overlay" id="menu">
       <div class="sheet">
         <h1>Softie</h1>
-        <p class="tag">Softie the red panda is on a trip around the world, from Auckland's Sky Tower to a real New Zealand volcano. Dodge the lava, skip the spikes and bounce up the walls to reach every glowing door.</p>
+        <p class="tag">Softie the red panda travels the world, from Auckland's Sky Tower to a New Zealand volcano, then blasts off into space to the Moon, Mars, Saturn and beyond (space levels are unlocked with coins). Dodge the lava, skip the spikes and bounce up the walls to reach every door and rocket.</p>
         <div class="levels" id="levels"></div>
+        <div id="menuBuy" hidden><p id="menuBuyText"></p><div class="row"><button class="btn primary" id="menuBuyYes">Buy &amp; play</button><button class="btn" id="menuBuyNo">Cancel</button></div></div>
+        <p class="shopmsg" id="menuMsg">Beat Volcano Core to fly to space! Each level you beat unlocks the next. You can also skip ahead in space with coins.</p>
         <div class="row">
           <button class="btn primary" id="shopBtn">Shop · <span id="menuCoins">0</span> coins</button>
           <button class="btn" id="musicMenuBtn">Music: Auto</button>
@@ -196,6 +205,7 @@ const COL = {
   spark:'#ffe066', teal:'#55e0c6',
   heroTop:'#ffb26b', heroMid:'#d4612e', heroBot:'#6b2f1e', heroHi:'#fff3e6', heroLo:'#2a1410', fuse:'#cfa56a', feet:'#5b2a6e'
 };
+const BASE_COL={...COL};
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- Levels (tile coordinates, y grows downward) ---------- */
@@ -243,9 +253,69 @@ const LEVELS = [
      g.fill(12,13,2,1,'^'); g.fill(7,13,2,1,'^');
      g.fill(2,10,3,1);
      g.set(10,39,'*'); g.set(18,25,'*'); g.set(10,10,'*'); } },
+ { name:"Launch Day", hint:"Climb the launch tower and jump into the rocket. Space is waiting!", w:40, h:16, spawn:[2,13], exit:[35,5], par:25, rocket:true, space:true,
+   pal:{rock:'#4a4f5c', rockHi:'#6b7182', rockLo:'#30343e', rockTop:'#9aa1b2'},
+   build(g){ g.fill(0,14,40,2); g.fill(8,13,2,1,'^');
+     g.fill(12,12,3,1); g.fill(16,10,3,1); g.fill(20,8,3,1); g.fill(24,6,4,1);
+     g.fill(26,13,6,1,'^'); g.fill(28,6,2,1,'C'); g.fill(30,6,8,1);
+     g.set(9,10,'*'); g.set(21,5,'*'); g.set(33,3,'*'); } },
+ { name:"Moon Walk", hint:"Low gravity! Jumps go higher and float longer. Don't fall into space.", w:70, h:16, spawn:[2,13], exit:[67,13], par:30, rocket:true, space:true, grav:.55,
+   pal:{rock:'#5c5c66', rockHi:'#7c7c88', rockLo:'#3d3d46', rockTop:'#b4b4c0'},
+   build(g){ g.fill(0,14,10,2); g.fill(16,14,8,2); g.fill(30,12,5,4); g.fill(35,14,6,2); g.fill(37,13,2,1,'^');
+     g.fill(47,10,3,6); g.fill(50,14,20,2); g.fill(53,13,4,1,'^');
+     g.set(12,9,'*'); g.set(32,8,'*'); g.set(48,6,'*'); } },
+ { name:"Crater Wall", hint:"Wall-jump up the crater. Floaty jumps make it easier to switch sides.", w:16, h:34, spawn:[7,31], exit:[13,3], par:30, rocket:true, space:true, grav:.6,
+   pal:{rock:'#5c5c66', rockHi:'#7c7c88', rockLo:'#3d3d46', rockTop:'#b4b4c0'},
+   build(g){ g.fill(0,0,11,1); g.fill(0,4,5,28); g.fill(11,4,5,28); g.fill(0,32,16,2);
+     g.fill(5,22,1,2,'>'); g.fill(10,14,1,2,'<'); g.fill(5,8,1,2,'>');
+     g.set(8,20,'*'); g.set(8,10,'*'); g.set(2,3,'*'); } },
+ { name:"Asteroid Hop", hint:"Hop across floating rocks. Cracked ones crumble, so keep moving!", w:72, h:20, spawn:[2,11], exit:[68,11], par:35, rocket:true, space:true, grav:.6,
+   pal:{rock:'#4b3f3a', rockHi:'#6b5a52', rockLo:'#2f2723', rockTop:'#8f7a6e'},
+   build(g){ g.fill(0,12,6,2); g.fill(9,11,3,1); g.fill(15,9,3,1); g.fill(21,12,2,1,'C'); g.fill(26,10,3,1);
+     g.fill(32,8,2,1); g.fill(37,11,4,1); g.set(38,10,'K'); g.fill(44,9,3,1,'C'); g.fill(50,7,3,1); g.fill(56,10,3,1); g.fill(62,12,10,2);
+     g.set(18,6,'*'); g.set(35,5,'*'); g.set(53,4,'*'); } },
+ { name:"Red Planet", hint:"Mars has lava pits. Use the rocks and crumbly ledges to cross.", w:72, h:14, spawn:[2,11], exit:[69,11], par:30, rocket:true, space:true, grav:.75,
+   pal:{rock:'#8a3b22', rockHi:'#b0532f', rockLo:'#5e2414', rockTop:'#d47a4a'},
+   build(g){ g.fill(0,12,6,2); g.fill(6,12,60,2,'L'); g.fill(66,12,6,2);
+     g.fill(9,11,2,3); g.fill(14,10,2,4); g.fill(19,11,2,3); g.fill(23,10,3,1,'C'); g.fill(28,9,2,5); g.fill(33,10,3,1,'C');
+     g.fill(38,11,2,3); g.set(38,10,'K'); g.fill(43,9,2,5); g.fill(48,10,3,1,'C'); g.fill(53,8,2,6); g.fill(58,10,3,1,'C'); g.fill(63,11,2,3);
+     g.set(16,7,'*'); g.set(35,7,'*'); g.set(55,5,'*'); } },
+ { name:"Ice Moon", hint:"Sneak under the ice wall, then wall-jump past the ice spikes.", w:60, h:22, spawn:[2,19], exit:[57,3], par:35, rocket:true, space:true, grav:.7,
+   pal:{rock:'#3c6c8c', rockHi:'#5e93b5', rockLo:'#244a63', rockTop:'#bfe6ff', spike:'#f2fbff', spikeLo:'#8cc4e0'},
+   build(g){ g.fill(0,20,40,2); g.fill(8,19,2,1,'^'); g.fill(14,19,2,1,'^'); g.fill(20,19,2,1,'^');
+     g.fill(29,4,2,14); g.fill(36,4,2,16); g.fill(38,4,22,1);
+     g.fill(31,12,1,2,'>'); g.fill(35,8,1,2,'<'); g.set(44,3,'^'); g.set(50,3,'^');
+     g.set(15,16,'*'); g.set(33,10,'*'); g.set(53,1,'*'); } },
+ { name:"Saturn's Rings", hint:"The ring rocks crumble the moment you land. Bounce quickly from one to the next!", w:80, h:18, spawn:[2,11], exit:[77,10], par:40, rocket:true, space:true, grav:.6,
+   pal:{rock:'#5a4a6e', rockHi:'#7d6896', rockLo:'#3a2e48', rockTop:'#b8a3d6', crumble:'#c9b48a', crumbleHi:'#efdcae', crumbleLo:'#7d6a48'},
+   build(g){ g.fill(0,12,6,2);
+     g.fill(8,11,3,1,'C'); g.fill(13,10,3,1,'C'); g.fill(18,9,3,1,'C'); g.fill(23,10,3,1,'C');
+     g.fill(28,11,4,1); g.set(29,10,'K');
+     g.fill(34,9,2,1,'C'); g.fill(38,7,2,1,'C'); g.fill(42,9,2,1,'C'); g.fill(46,11,3,1);
+     g.fill(51,10,2,1,'C'); g.fill(55,8,2,1,'C'); g.fill(59,6,2,1,'C'); g.fill(63,8,2,1,'C'); g.fill(67,10,3,1,'C');
+     g.fill(72,11,8,2);
+     g.set(16,6,'*'); g.set(40,4,'*'); g.set(61,3,'*'); } },
+ { name:"Space Station", hint:"Spikes on the ceiling and glowing plasma on the floor. Small hops on the tall boxes!", w:70, h:14, spawn:[2,11], exit:[67,11], par:30, rocket:true, space:true, grav:.85,
+   pal:{rock:'#3e4652', rockHi:'#5c6878', rockLo:'#262c34', rockTop:'#8fa3b8', lava:'#2fcf78', lavaHi:'#8ff0b4', lavaTop:'#e0ffe9'},
+   build(g){ g.fill(0,0,64,5); g.fill(0,12,70,2);
+     for(let x=12;x<64;x++){ if((x>=33&&x<=37)) continue; g.set(x,5,'v'); }
+     g.fill(22,12,3,2,'L'); g.fill(44,12,3,2,'L');
+     g.set(8,11,'^'); g.fill(34,11,2,1,'^'); g.set(56,11,'^');
+     g.fill(15,10,2,2); g.fill(27,9,2,3); g.fill(40,10,2,2); g.fill(50,9,2,3); g.fill(61,10,2,2);
+     g.set(37,11,'K'); g.set(16,9,'*'); g.set(28,7,'*'); g.set(59,8,'*'); } },
+ { name:"Sun Escape", hint:"Solar plasma is rising! Climb to the rocket and fly home.", w:24, h:50, spawn:[4,47], exit:[11,11], par:60, rocket:true, space:true, grav:.8, lava:{speed:26, delay:3},
+   pal:{rock:'#4a2a22', rockHi:'#6e3e30', rockLo:'#2e1914', rockTop:'#a8644a', lava:'#ffb81f', lavaHi:'#ffe66a', lavaTop:'#ffffff'},
+   build(g){ g.fill(0,0,24,1); g.fill(0,0,2,50); g.fill(22,0,2,50); g.fill(0,48,24,2);
+     g.fill(6,45,3,1,'C'); g.fill(11,42,3,1); g.fill(16,39,3,1,'C'); g.fill(19,36,3,1); g.set(20,35,'K');
+     g.fill(10,12,8,22);
+     g.fill(21,28,1,2,'<'); g.fill(18,22,1,2,'>'); g.fill(21,16,1,2,'<');
+     g.set(15,11,'^');
+     g.set(8,41,'*'); g.set(20,25,'*'); g.set(6,9,'*'); } }
 ];
 
 function build(def){
+  Object.assign(COL, BASE_COL, def.pal||{});
+  P.g=1800*(def.grav||1); P.maxFall=Math.round(880*Math.sqrt(def.grav||1));
   const W=def.w, H=def.h, grid=[];
   for(let y=0;y<H;y++) grid.push(new Array(W).fill('.'));
   const g = {
@@ -269,6 +339,11 @@ try{ const s=JSON.parse(localStorage.getItem(KEY)); if(s && s.unlocked) save=s; 
 save.coins=save.coins||0; save.owned=save.owned||{classic:1,none:1}; save.skin=save.skin||'classic'; save.hat=save.hat||'none'; save.music=save.music||'auto';
 function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(save)); }catch(e){} }
 const has=id=>!!save.owned[id];
+save.bought=save.bought||{};
+for(let i=8;i<save.unlocked;i++) save.bought[i]=1;
+const SPACE_START=8, spacePrice=i=>100+(i-SPACE_START)*25;
+const avail=i=> i<save.unlocked || !!save.bought[i];
+function buyLevel(i){ const pr=spacePrice(i); if(save.coins<pr){ sfx('no'); return pr-save.coins; } save.coins-=pr; save.bought[i]=1; persist(); sfx('buy'); updateCoins(); return 0; }
 const ABILITIES=[
   {id:'speed', name:'Speed Paws', desc:'Run faster', price:120},
   {id:'magnet', name:'Spark Magnet', desc:'Sparks fly to you', price:150},
@@ -465,7 +540,7 @@ function die(byLava){
 }
 
 function win(){
-  mode='win';
+  mode='win'; launchT=performance.now()/1000; if(L.def.rocket) sfx('boom');
   emit(p.x+PW/2,p.y,30,{c:[COL.teal,COL.spark,'#ffffff'],sp:220,ang:-Math.PI/2,spread:2.4,life:1,s:3,g:300});
   const allSparks=L.sparks.every(s=>s.got), fast=time<=L.def.par;
   const stars=1+(allSparks?1:0)+(fast?1:0);
@@ -473,22 +548,25 @@ function win(){
   save.coins+=earned; sfx('win');
   save.stars[li]=Math.max(save.stars[li]||0, stars);
   save.unlocked=Math.max(save.unlocked, Math.min(LEVELS.length, li+2));
+  if(L.def.rocket && li+1<LEVELS.length) save.bought[li+1]=1;
   persist();
   setTimeout(()=>{
     const last=li===LEVELS.length-1;
-    $('doneTitle').textContent= last ? 'Softie finished the world trip!' : 'Level clear!';
+    $('doneTitle').textContent= last ? 'Softie explored the whole galaxy!' : li===7 ? 'World trip done! Next stop: space!' : 'Level clear!';
     $('doneEarn').textContent=`+${earned} coins  ·  ${save.coins} total`; updateCoins();
     [...$('doneStars').children].forEach((el,i)=>el.classList.toggle('on', i<stars));
     const got=L.sparks.filter(s=>s.got).length;
     $('doneChecks').innerHTML=
-      `<li><span>Reached the door</span><span class="ok">Yes</span></li>`+
+      `<li><span>${L.def.rocket?'Reached the rocket':'Reached the door'}</span><span class="ok">Yes</span></li>`+
       `<li><span>Sparks found</span><span class="${allSparks?'ok':'no'}">${got}/${L.sparks.length}</span></li>`+
       `<li><span>Time (beat ${fmt(L.def.par)})</span><span class="${fast?'ok':'no'}">${fmt(time)}</span></li>`+
       `<li><span>Tries lost</span><span class="no">${deaths}</span></li>`;
     $('nextBtn').hidden=last;
+    if(!last){ const n=li+1; $('nextBtn').textContent= avail(n)?'Next level':`Unlock next · ● ${spacePrice(n)}`; }
+    if(L.def.rocket && !last){ let c=3; const tick=()=>{ if(c<=0){ autoNext=0; startLevel(li+1); return; } $('nextBtn').textContent=`Next level in ${c}`; c--; autoNext=setTimeout(tick,1000); }; tick(); }
     $('done').hidden=false;
     (last?$('replayBtn'):$('nextBtn')).focus({preventScroll:true});
-  }, 650);
+  }, L.def.rocket?1500:650);
 }
 
 /* ---------- Particles ---------- */
@@ -589,7 +667,66 @@ function drawCheckpoint(k,t){
     ctx.fillStyle='#fff3c0'; ctx.fillRect(x+15,y+8,2,3);
   } else { ctx.fillStyle='#5d4650'; ctx.fillRect(x+14,y+8,4,4); }
 }
+let launchT=0, autoNext=0;
+function stopAutoNext(){ if(autoNext){ clearTimeout(autoNext); autoNext=0; } }
+function drawRocket(t){
+  const [ex,ey]=L.def.exit, cx=ex*T+16, base=(ey+1)*T;
+  let lift=0, firing=mode==='win';
+  if(firing){ const k=Math.max(0,t-launchT-.2); lift=k*k*320; }
+  ctx.fillStyle='#3a3f4a'; ctx.fillRect(cx-22,base-4,44,4); ctx.fillStyle='#5a606c'; ctx.fillRect(cx-22,base-4,44,1.5);
+  const y0=base-4-lift;
+  if(firing){
+    const fl=10+Math.random()*10+Math.min(30,lift*.2);
+    const fw=li%2===0?8:14; ctx.fillStyle='#ff6a1f'; ctx.beginPath(); ctx.moveTo(cx-fw,y0); ctx.lineTo(cx+fw,y0); ctx.lineTo(cx,y0+fl+10); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#ffe066'; ctx.beginPath(); ctx.moveTo(cx-fw*.55,y0); ctx.lineTo(cx+fw*.55,y0); ctx.lineTo(cx,y0+fl); ctx.closePath(); ctx.fill();
+    if(Math.random()<.7) emit(cx,y0+8,2,{c:['#d8d8e0','#a8a8b4','#ffb02e'],sp:60,ang:Math.PI/2,spread:1.6,life:.9,s:5,g:-40});
+  } else {
+    const pulse=.5+.5*Math.sin(t*3);
+    ctx.fillStyle=`rgba(85,224,198,${.12+pulse*.12})`; ctx.beginPath(); ctx.arc(cx,base-18,26,0,Math.PI*2); ctx.fill();
+  }
+  ctx.save(); ctx.translate(cx,y0);
+  const face=(wx,wy)=>{ ctx.fillStyle='#8a93a3'; ctx.beginPath(); ctx.arc(wx,wy,4.6,0,7); ctx.fill(); ctx.fillStyle='#2b3a63'; ctx.beginPath(); ctx.arc(wx,wy,3.6,0,7); ctx.fill();
+    if(firing){ ctx.fillStyle='#d4612e'; ctx.beginPath(); ctx.arc(wx,wy+.5,2.6,0,7); ctx.fill(); ctx.fillStyle='#fff3e6'; ctx.fillRect(wx-1.6,wy+.4,3.2,1.6); ctx.fillStyle='#120807'; ctx.fillRect(wx-1.4,wy-1,1,1); ctx.fillRect(wx+.4,wy-1,1,1); }
+    else { ctx.fillStyle='rgba(180,230,255,.6)'; ctx.fillRect(wx-2,wy-2.4,1.4,1.8); } };
+  const hatch=(hy)=>{ if(firing) return; ctx.fillStyle='#163c3a'; ctx.fillRect(-5,hy,10,11); ctx.fillStyle=COL.teal; ctx.globalAlpha=.6+.4*Math.sin(t*3); ctx.fillRect(-4,hy+1,8,9); ctx.globalAlpha=1; };
+  const letters=(txt,x,y0,col)=>{ ctx.fillStyle=col; ctx.font='bold 6px monospace'; ctx.textAlign='center'; ctx.textBaseline='top'; [...txt].forEach((ch,i)=>ctx.fillText(ch,x,y0+i*6.4)); ctx.textBaseline='alphabetic'; };
+  if(li%2===0){
+    // American moon rocket style: tall, white with black roll-pattern bands
+    ctx.fillStyle='#3a3f4a'; [-6,-2,2,6].forEach(e=>ctx.fillRect(e-1.6,-4,3.2,4));
+    tri(-9,-14,-9,-2,-13,0,'#2a2a2e'); tri(9,-14,9,-2,13,0,'#2a2a2e');
+    ctx.fillStyle='#f2f3f5'; ctx.fillRect(-9,-44,18,40); ctx.fillStyle='#d2d6de'; ctx.fillRect(4,-44,5,40);
+    ctx.fillStyle='#16161a'; ctx.fillRect(-9,-14,9,10); ctx.fillRect(0,-24,9,10); ctx.fillRect(-9,-44,18,3); ctx.fillRect(0,-41,9,6);
+    letters('USA',-4.5,-40,'#16161a');
+    ctx.fillStyle='#f2f3f5'; ctx.fillRect(-9,-72,18,28); ctx.fillStyle='#d2d6de'; ctx.fillRect(4,-72,5,28);
+    ctx.fillStyle='#16161a'; ctx.fillRect(-9,-72,18,2.5); ctx.fillRect(-9,-47,18,2);
+    ctx.fillStyle='#f2f3f5'; ctx.beginPath(); ctx.moveTo(-9,-72); ctx.lineTo(9,-72); ctx.lineTo(6.5,-78); ctx.lineTo(-6.5,-78); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#f2f3f5'; ctx.fillRect(-6.5,-92,13,14); ctx.fillStyle='#d2d6de'; ctx.fillRect(3,-92,3.5,14);
+    ctx.fillStyle='#16161a'; ctx.fillRect(-6.5,-86,6.5,5);
+    tri(-6.5,-92,6.5,-92,0,-102,'#c8ccd4'); tri(0,-92,6.5,-92,0,-102,'#a4aab4');
+    ctx.strokeStyle='#8a2a22'; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(0,-102); ctx.lineTo(0,-110); ctx.stroke();
+    ctx.fillStyle='#e2463c'; ctx.fillRect(-1,-112,2,2.5);
+    face(0,-97); hatch(-15);
+  } else {
+    // Soviet rocket style: core with four flared, pointed strap-on boosters
+    const bodyC='#cfd4c6', shade='#a9b0a0';
+    ctx.fillStyle='#3a3f4a'; [-10,-4,4,10].forEach(e=>ctx.fillRect(e-1.8,-4,3.6,4));
+    ctx.fillStyle=bodyC; ctx.fillRect(-5,-80,10,76); ctx.fillStyle=shade; ctx.fillRect(2,-80,3,76);
+    letters('СССР',0,-74,'#c8322a');
+    ctx.fillStyle='#e8e2d0'; ctx.beginPath(); ctx.moveTo(-15,-4); ctx.lineTo(-6,-4); ctx.lineTo(-6,-36); ctx.lineTo(-8,-46); ctx.lineTo(-11,-30); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#bfb8a4'; ctx.beginPath(); ctx.moveTo(15,-4); ctx.lineTo(6,-4); ctx.lineTo(6,-36); ctx.lineTo(8,-46); ctx.lineTo(11,-30); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#f0ead8'; ctx.beginPath(); ctx.moveTo(-6,-4); ctx.lineTo(6,-4); ctx.lineTo(4.5,-34); ctx.lineTo(0,-46); ctx.lineTo(-4.5,-34); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#d6cfba'; ctx.beginPath(); ctx.moveTo(1,-4); ctx.lineTo(6,-4); ctx.lineTo(4.5,-34); ctx.lineTo(0,-46); ctx.lineTo(1,-34); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#8a2a22'; ctx.fillRect(-15,-8,30,2);
+    ctx.fillStyle='#5a6050'; ctx.fillRect(-5.5,-86,11,6); ctx.strokeStyle='#3a3f34'; ctx.lineWidth=.8; ctx.beginPath(); for(let k=-5;k<6;k+=2.5){ ctx.moveTo(k,-86); ctx.lineTo(k+2.5,-80); } ctx.stroke();
+    ctx.fillStyle='#f2f3f5'; ctx.fillRect(-6.5,-104,13,18); ctx.fillStyle='#d2d6de'; ctx.fillRect(3,-104,3.5,18);
+    tri(-6.5,-104,6.5,-104,0,-114,'#f2f3f5'); tri(0,-104,6.5,-104,0,-114,'#d2d6de');
+    ctx.strokeStyle='#8a93a3'; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(0,-114); ctx.lineTo(0,-122); ctx.stroke();
+    face(0,-96); hatch(-20);
+  }
+  ctx.restore();
+}
 function drawExit(t){
+  if(L.def.rocket) return drawRocket(t);
   const [ex,ey]=L.def.exit, x=ex*T, y=ey*T, pulse=.5+.5*Math.sin(t*3);
   ctx.fillStyle=`rgba(85,224,198,${.12+pulse*.1})`; ctx.beginPath(); ctx.arc(x+16,y+12,30,0,Math.PI*2); ctx.fill();
   ctx.fillStyle=COL.rockLo; ctx.fillRect(x+1,y-14,30,46);
@@ -647,6 +784,7 @@ function drawHero(t){
   ctx.fillStyle='#ff7a8a'; ctx.fillRect(11,-11.4,2.6,1.1);
   ctx.fillStyle='#ff8a8a99'; ctx.fillRect(1,-14,3,2);
   const hat=save.hat;
+  if(L&&L.def.space&&L.def.grav){ ctx.fillStyle='rgba(170,220,255,.16)'; ctx.strokeStyle='rgba(210,240,255,.85)'; ctx.lineWidth=1.3; ctx.beginPath(); ctx.arc(5,-19,13,0,7); ctx.fill(); ctx.stroke(); ctx.fillStyle='rgba(255,255,255,.7)'; ctx.fillRect(9,-28,3,1.5); ctx.fillRect(12,-26,1.5,2); }
   if(hat==='party'){ tri(1,-24,9,-24,5,-36,'#ff5fa2'); ctx.fillStyle='#ffd166'; ctx.fillRect(3,-29,4,1.5); ctx.fillRect(4,-33,2,1.5); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(5,-36,1.8,0,7); ctx.fill(); }
   else if(hat==='shades'){ ctx.fillStyle='#111'; ctx.fillRect(3,-22,9,4); ctx.fillRect(-2,-21,5,1.2); ctx.fillStyle='#6fc3ff'; ctx.fillRect(4,-21.5,3,1); }
   else if(hat==='flower'){ ctx.fillStyle='#ff7eb6'; [[0,-3],[3,0],[0,3],[-3,0]].forEach(([a,b])=>{ ctx.beginPath(); ctx.arc(10+a*.8,-27+b*.8,2,0,7); ctx.fill(); }); ctx.fillStyle='#ffe066'; ctx.beginPath(); ctx.arc(10,-27,1.4,0,7); ctx.fill(); }
@@ -830,6 +968,93 @@ const SCENES=[
    poly(x,y,u,[[5,54],[8,54],[16,36],[13,38]],'rgba(255,120,40,.3)');
    for(let i=0;i<7;i++){ const ph=(t*.12+i/7)%1; ctx.fillStyle=`rgba(120,90,100,${.4*(1-ph)})`;
      ctx.beginPath(); ctx.arc(x+(Math.sin(i*2.1+t*.3)*6+ph*16)*u,y-(58+ph*42)*u,(5+ph*11)*u,0,7); ctx.fill(); } }},
+ {place:'Launch Site, Earth', top:'#1b2450', mid:'#7a4f8a', bot:'#ffb37a', far:'#4a3e5e', near:'#2a2438', mote:'255,230,200', lx:.62,
+  draw(x,y,u,t){
+   box(x,y,u,-40,0,80,4,'#3a3f4a');
+   box(x,y,u,10,4,6,74,'#9a3a2a'); for(let b=8;b<76;b+=6){ ln(x,y,u,10,b,16,b+6,'#5e2218',.5); ln(x,y,u,16,b,10,b+6,'#5e2218',.5); }
+   box(x,y,u,4,56,7,1.5,'#9a3a2a'); box(x,y,u,4,34,7,1.5,'#9a3a2a');
+   box(x,y,u,-12,4,5,40,'#dfe3ea'); box(x,y,u,7,4,0,0); poly(x,y,u,[[-12,44],[-7,44],[-9.5,50]],'#dfe3ea');
+   box(x,y,u,-6,4,12,62,'#eef1f6'); box(x,y,u,2,4,4,62,'#c4cad6');
+   poly(x,y,u,[[-6,66],[6,66],[0,78]],'#c8ccd4'); ln(x,y,u,0,78,0,86,'#8a2a22',.5); box(x,y,u,-6,40,12,2,'#16161a'); box(x,y,u,-6,4,6,8,'#16161a'); box(x,y,u,0,12,6,8,'#16161a'); box(x,y,u,-6,62,6,4,'#16161a');
+   poly(x,y,u,[[-6,4],[-9,4],[-6,10]],'#2a2a2e'); poly(x,y,u,[[6,4],[9,4],[6,10]],'#2a2a2e');
+   ctx.fillStyle='#2b3a63'; ctx.beginPath(); ctx.arc(x,y-57*u,2.6*u,0,7); ctx.fill();
+   ctx.fillStyle=(t%2)<1?'#ffe08a':'#b59a50'; ctx.fillRect(x+13*u,y-79*u,1.5*u,1.5*u);
+   [[-34,0],[30,0]].forEach(([a])=>{ box(x,y,u,a,4,1.2,22,'#2a2f3a'); ctx.fillStyle='#fff3c0'; ctx.fillRect(x+(a-1)*u,y-27*u,3.4*u,2*u); }); }},
+ {place:'The Moon', top:'#03040a', bot:'#141626', stars:true, far:'#4a4a55', near:'#6a6a75', mote:'220,225,255', lx:.66,
+  draw(x,y,u,t){
+   const ex=x-34*u, ey=y-86*u, r=11*u;
+   ctx.fillStyle='rgba(120,180,255,.25)'; ctx.beginPath(); ctx.arc(ex,ey,r*1.35,0,7); ctx.fill();
+   ctx.fillStyle='#2f6fd0'; ctx.beginPath(); ctx.arc(ex,ey,r,0,7); ctx.fill();
+   ctx.save(); ctx.beginPath(); ctx.arc(ex,ey,r,0,7); ctx.clip();
+   ctx.fillStyle='#4caf6a'; [[-.4,-.2,.45],[.35,.3,.35],[.1,-.55,.25]].forEach(([a,b,c])=>{ ctx.beginPath(); ctx.ellipse(ex+a*r,ey+b*r,c*r,c*r*.7,.4,0,7); ctx.fill(); });
+   ctx.fillStyle='rgba(255,255,255,.7)'; ctx.fillRect(ex-r,ey-.1*r,2*r,.12*r); ctx.fillRect(ex-.6*r,ey+.55*r,1.2*r,.1*r);
+   ctx.fillStyle='rgba(0,0,20,.55)'; ctx.beginPath(); ctx.arc(ex+.45*r,ey,r,0,7); ctx.fill(); ctx.restore();
+   box(x,y,u,-9,0,1.2,9,'#9aa0aa'); box(x,y,u,8,0,1.2,9,'#9aa0aa'); ln(x,y,u,-8,9,-12,0,'#9aa0aa',.6); ln(x,y,u,9,9,13,0,'#9aa0aa',.6);
+   box(x,y,u,-8,8,17,8,'#d8a632'); box(x,y,u,3,8,6,8,'#b08420'); box(x,y,u,-6,16,13,7,'#c8ccd4'); box(x,y,u,-3,18,4,3,'#2b3a63');
+   ln(x,y,u,4,23,6,29,'#c8ccd4',.4); ctx.fillStyle='#ff5050'; ctx.fillRect(x+5.6*u,y-29.6*u,u,u); }},
+ {place:'Moon Crater', top:'#02030a', bot:'#10121f', stars:true, far:'#3e3e48', near:'#5a5a64', mote:'220,225,255', lx:.5,
+  draw(x,y,u){
+   ctx.fillStyle='#d8e6ff'; ctx.beginPath(); ctx.arc(x+40*u,y-90*u,9*u,0,7); ctx.fill();
+   ctx.fillStyle='#02030a'; ctx.beginPath(); ctx.arc(x+43.5*u,y-91*u,8.4*u,0,7); ctx.fill();
+   poly(x,y,u,[[-80,0],[-60,16],[-40,22],[-20,10],[20,10],[40,22],[60,16],[80,0]],'#707080');
+   poly(x,y,u,[[-40,22],[-20,10],[20,10],[40,22],[30,18],[-30,18]],'#9a9aa8');
+   ctx.fillStyle='rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(x,y-11*u,22*u,3*u,0,0,7); ctx.fill(); }},
+ {place:'Asteroid Belt', top:'#05030c', bot:'#1a1030', stars:true, noLayers:true, mote:'200,190,255', lx:.5,
+  draw(x,y,u,t){
+   [[-60,40,9],[-25,75,14],[15,30,7],[45,62,12],[75,20,6],[-80,90,5],[30,100,8]].forEach(([a,b,r],i)=>{
+     const bx=x+a*u, by=y-(b+Math.sin(t*.6+i)*2)*u, R=r*u;
+     ctx.fillStyle='#4b3f3a'; ctx.beginPath(); ctx.ellipse(bx,by,R,R*.8,i,0,7); ctx.fill();
+     ctx.fillStyle='#6b5a52'; ctx.beginPath(); ctx.ellipse(bx-R*.25,by-R*.2,R*.55,R*.4,i,0,7); ctx.fill();
+     ctx.fillStyle='#2f2723'; ctx.beginPath(); ctx.arc(bx+R*.3,by+R*.15,R*.22,0,7); ctx.fill(); ctx.beginPath(); ctx.arc(bx-R*.35,by+R*.3,R*.14,0,7); ctx.fill(); }); }},
+ {place:'Mars', top:'#3a1a14', mid:'#8a3f24', bot:'#e08a5a', far:'#9a4a2a', near:'#6a2a18', sun:[.78,.3,.025,'#fff0d8'], mote:'255,190,150', lx:.4,
+  draw(x,y,u){
+   ctx.fillStyle='#a89a90'; ctx.beginPath(); ctx.arc(x-30*u,y-95*u,3*u,0,7); ctx.fill(); ctx.beginPath(); ctx.arc(x+60*u,y-80*u,2*u,0,7); ctx.fill();
+   box(x,y,u,-10,4,20,6,'#e8e2d8'); box(x,y,u,-10,4,20,1.5,'#b8b0a4'); box(x,y,u,-12,9,24,1.2,'#3a3f4a');
+   [-8,0,8].forEach(a=>{ ctx.fillStyle='#2a2a30'; ctx.beginPath(); ctx.arc(x+a*u,y-2.5*u,2.6*u,0,7); ctx.fill(); ctx.fillStyle='#6a6a74'; ctx.beginPath(); ctx.arc(x+a*u,y-2.5*u,1*u,0,7); ctx.fill(); });
+   box(x,y,u,5,10,1.2,12,'#c8c2b8'); box(x,y,u,3,22,5,3,'#e8e2d8'); ctx.fillStyle='#2b3a63'; ctx.fillRect(x+6*u,y-24.5*u,1.6*u,1.6*u);
+   box(x,y,u,-8,10,7,.8,'#3a5a9a'); ln(x,y,u,-4.5,10.8,-4.5,13,'#c8c2b8',.4); box(x,y,u,-9,13,9,3,'#2a4a8a'); }},
+ {place:'Europa, Moon of Jupiter', top:'#02030a', bot:'#101830', stars:true, far:'#9fc4dc', near:'#d8eef8', mote:'210,235,255', lx:.5,
+  draw(x,y,u){
+   const jx=x+10*u, jy=y-78*u, R=40*u;
+   ctx.save(); ctx.beginPath(); ctx.arc(jx,jy,R,0,7); ctx.clip();
+   ['#efe0c8','#c08a5a','#e6cfa8','#b5714a','#f0e4cc','#c99a6a','#e2c9a0','#a8603e','#e8d6b6'].forEach((c,i)=>{ ctx.fillStyle=c; ctx.fillRect(jx-R,jy-R+i*R*2/9,R*2,R*2/9+1); });
+   ctx.fillStyle='#c0503a'; ctx.beginPath(); ctx.ellipse(jx+R*.35,jy+R*.3,R*.18,R*.1,0,0,7); ctx.fill();
+   ctx.fillStyle='rgba(0,0,15,.45)'; ctx.beginPath(); ctx.arc(jx-R*.55,jy,R,0,7); ctx.fill(); ctx.restore();
+   poly(x,y,u,[[-70,0],[-55,8],[-40,4],[-30,12],[-20,6],[0,4],[30,10],[50,5],[70,0]],'#c4e2f2');
+   [[-50,6],[-25,9],[35,8]].forEach(([a,b])=>poly(x,y,u,[[a-2,b-2],[a+2,b-2],[a,b+6]],'#eaf7ff')); }},
+ {place:"Saturn's Rings", top:'#04030c', bot:'#1a1428', stars:true, noLayers:true, mote:'230,210,255', lx:.55,
+  draw(x,y,u){
+   const sx=x, sy=y-55*u, R=26*u;
+   const ring=(front)=>{ ctx.save(); ctx.beginPath(); if(front) ctx.rect(sx-80*u,sy,160*u,80*u); else ctx.rect(sx-80*u,sy-80*u,160*u,80*u); ctx.clip();
+     [['#d9c49a',58,4],['#b8a37a',50,3],['#e8d8b2',43,2.5]].forEach(([c,r,w])=>{ ctx.strokeStyle=c; ctx.lineWidth=w*u; ctx.beginPath(); ctx.ellipse(sx,sy,r*u,r*.28*u,-.15,0,7); ctx.stroke(); }); ctx.restore(); };
+   ring(false);
+   ctx.save(); ctx.beginPath(); ctx.arc(sx,sy,R,0,7); ctx.clip();
+   ['#e6c98a','#d4b070','#ecd8a4','#c9a060','#e2c48a'].forEach((c,i)=>{ ctx.fillStyle=c; ctx.fillRect(sx-R,sy-R+i*R*2/5,R*2,R*2/5+1); });
+   ctx.fillStyle='rgba(0,0,15,.4)'; ctx.beginPath(); ctx.arc(sx+R*.5,sy,R,0,7); ctx.fill(); ctx.restore();
+   ring(true);
+   [[-70,10,6],[-40,4,4],[60,8,5],[80,14,3]].forEach(([a,b,r])=>{ ctx.fillStyle='#7d6896'; ctx.beginPath(); ctx.arc(x+a*u,y-b*u,r*u,0,7); ctx.fill(); }); }},
+ {place:'Space Station', top:'#02030a', bot:'#0b1a3a', stars:true, noLayers:true, mote:'200,220,255', lx:.5,
+  draw(x,y,u,t){
+   ctx.fillStyle='rgba(90,160,255,.35)'; ctx.beginPath(); ctx.arc(x,y+330*u,346*u,0,7); ctx.fill();
+   ctx.fillStyle='#1f5aa8'; ctx.beginPath(); ctx.arc(x,y+330*u,340*u,0,7); ctx.fill();
+   ctx.fillStyle='#3f8a5a'; ctx.beginPath(); ctx.ellipse(x-40*u,y-2*u,30*u,4*u,0,0,7); ctx.fill();
+   ctx.fillStyle='rgba(255,255,255,.6)'; ctx.fillRect(x+20*u,y-6*u,40*u,1.5*u);
+   const sy=y-70*u;
+   box(x,sy+70*u-y+y,u,0,0,0,0);
+   ctx.fillStyle='#c8ccd4'; ctx.fillRect(x-50*u,sy-1*u,100*u,2*u);
+   [[-46,-1],[-30,1],[30,-1],[46,1]].forEach(([a])=>{ ctx.fillStyle='#22407a'; ctx.fillRect(x+(a-6)*u,sy-16*u,12*u,14*u); ctx.fillRect(x+(a-6)*u,sy+2*u,12*u,14*u);
+     ctx.strokeStyle='#5a7ac0'; ctx.lineWidth=Math.max(.5,.3*u); for(let k=1;k<4;k++){ ctx.beginPath(); ctx.moveTo(x+(a-6+k*3)*u,sy-16*u); ctx.lineTo(x+(a-6+k*3)*u,sy+16*u); ctx.stroke(); } });
+   [[-14,8,5],[-2,10,6],[12,8,5]].forEach(([a,w,h])=>{ ctx.fillStyle='#e8ebf0'; ctx.fillRect(x+(a-w/2)*u,sy-h/2*u,w*u,h*u); ctx.fillStyle='#b4bac4'; ctx.fillRect(x+(a-w/2)*u,sy+(h/2-1.2)*u,w*u,1.2*u); });
+   ctx.fillStyle=(t%1.2)<.6?'#ff5050':'#5a1a1a'; ctx.fillRect(x+49*u,sy-1.5*u,1.5*u,1.5*u); }},
+ {place:'Near the Sun', top:'#1a0500', mid:'#5a1500', bot:'#ff7a1a', noLayers:true, mote:'255,210,120', lx:.5,
+  draw(x,y,u,t){
+   const sx=x, sy=y-40*u, R=60*u;
+   for(let i=3;i>0;i--){ ctx.fillStyle=`rgba(255,${150+i*20},60,${.12})`; ctx.beginPath(); ctx.arc(sx,sy,R*(1+i*.18),0,7); ctx.fill(); }
+   ctx.fillStyle='#ffb02e'; ctx.beginPath(); ctx.arc(sx,sy,R,0,7); ctx.fill();
+   ctx.fillStyle='#ffd24a'; ctx.beginPath(); ctx.arc(sx-R*.15,sy-R*.15,R*.75,0,7); ctx.fill();
+   ctx.fillStyle='#fff2a0'; ctx.beginPath(); ctx.arc(sx-R*.25,sy-R*.25,R*.35,0,7); ctx.fill();
+   for(let i=0;i<6;i++){ const a=i*1.05+t*.15, fl=R*(1.05+.12*Math.sin(t*2+i*2));
+     ctx.strokeStyle='rgba(255,120,30,.7)'; ctx.lineWidth=2.5*u; ctx.beginPath(); ctx.arc(sx+Math.cos(a)*fl,sy+Math.sin(a)*fl,7*u,a+Math.PI*.6,a+Math.PI*1.4); ctx.stroke(); } }}
 ];
 const off=document.createElement('canvas'), offCtx=off.getContext('2d');
 function drawScenery(t,dt){
@@ -849,10 +1074,10 @@ function drawScenery(t,dt){
   if(B.sun){ const [sx,sy,sr,col]=B.sun, r=Math.min(cw,ch)*sr, X=cw*sx, Y=ch*sy;
     ctx.fillStyle=col+'33'; ctx.beginPath(); ctx.arc(X,Y,r*1.8,0,7); ctx.fill();
     ctx.fillStyle=col; ctx.beginPath(); ctx.arc(X,Y,r,0,7); ctx.fill(); }
-  layer(camX*.06,B.far,.36,7.3,90/PX*1.6);
+  if(!B.noLayers) layer(camX*.06,B.far,.36,7.3,90/PX*1.6);
   const u=Math.min(ch*.0062, cw*.0075);
   B.draw(Math.round(cw*B.lx-camX*.03), Math.round(ch*.86), u, t);
-  layer(camX*.2,B.near,.2,13.7,56/PX*1.6);
+  if(!B.noLayers) layer(camX*.2,B.near,.2,13.7,56/PX*1.6);
   for(const e of embers){
     e.ph+=dt*2;
     const bx=((e.x*cw - camX*.2)%cw+cw)%cw;
@@ -895,7 +1120,7 @@ function render(t, dt){
   drawExit(t);
   L.cps.forEach(c=>drawCheckpoint(c,t));
   L.sparks.forEach(s=>drawSpark(s,t));
-  if(mode!=='dead') drawHero(t);
+  if(mode!=='dead' && !(mode==='win'&&L.def.rocket)) drawHero(t);
   drawRisingLava(t,vw,vh);
   ctx.textAlign='center'; ctx.font='bold 10px Silkscreen, monospace';
   for(const q of parts){ ctx.globalAlpha=Math.max(0,1-q.life/q.max); ctx.fillStyle=q.c;
@@ -921,18 +1146,31 @@ function showBanner(){
 }
 function hideBanner(){ clearTimeout(bannerTimer); $('banner').classList.add('off'); }
 
+let armed=-1;
 function renderMenu(){
   const box=$('levels'); box.innerHTML='';
   LEVELS.forEach((lv,i)=>{
+    if(i===0||i===SPACE_START){ const h=document.createElement('h3'); h.className='lvhead'; h.textContent=i===0?'WORLD TRIP':'SPACE TRIP'; box.appendChild(h); }
     const b=document.createElement('button'); b.className='card'; b.id='lvl'+i;
-    const locked=i>=save.unlocked, st=save.stars[i]||0;
-    b.disabled=locked;
-    b.innerHTML=`<span class="n">LEVEL ${i+1}</span><span class="nm">${lv.name}</span><span class="pl">${SCENES[i].place}</span><span class="st">${locked?'Locked':[0,1,2].map(j=>`<span class="${j<st?'on':''}">★</span>`).join('')}</span>`;
-    b.addEventListener('click',()=>startLevel(i));
+    const open=avail(i), st=save.stars[i]||0, forSale=!open&&i>=SPACE_START;
+    b.disabled=!open&&!forSale;
+    if(forSale) b.classList.add('buy');
+    if(forSale&&armed===i) b.classList.add('arm');
+    const stars=[0,1,2].map(j=>`<span class="${j<st?'on':''}">★</span>`).join('');
+    const status= open?stars : forSale ? `Beat level ${i} or ● ${spacePrice(i)}` : 'Locked';
+    b.innerHTML=`<span class="n">LEVEL ${i+1}</span><span class="nm">${lv.name}</span><span class="pl">${SCENES[i].place}</span><span class="st">${status}</span>`;
+    b.addEventListener('click',()=>{
+      if(avail(i)){ armed=-1; $('menuBuy').hidden=true; return startLevel(i); }
+      armed=i; renderMenu();
+      $('menuBuyText').textContent=`Unlock ${lv.name} for ${spacePrice(i)} coins? You have ${save.coins}.`;
+      $('menuBuy').hidden=false; $('menuBuyYes').focus({preventScroll:true});
+      $('menuBuy').scrollIntoView({block:'nearest',behavior:'smooth'});
+    });
     box.appendChild(b);
   });
 }
 function openMenu(){
+  stopAutoNext(); armed=-1; $('menuBuy').hidden=true;
   mode='menu'; hideBanner();
   $('pause').hidden=true; $('done').hidden=true;
   const pick=Math.min(save.unlocked-1, LEVELS.length-1);
@@ -940,6 +1178,7 @@ function openMenu(){
   $('shop').hidden=true; renderMenu(); $('menu').hidden=false; updateCoins(); applyMusic();
 }
 function startLevel(i){
+  stopAutoNext();
   $('menu').hidden=true; $('pause').hidden=true; $('done').hidden=true;
   $('shop').hidden=true; loadLevel(i); mode='play'; acc=0; clearInput(); applyMusic();
 }
@@ -951,14 +1190,18 @@ $('pauseBtn').addEventListener('click',()=>{ if(mode==='paused') resume(); else 
 $('resumeBtn').addEventListener('click',resume);
 $('restartBtn').addEventListener('click',()=>startLevel(li));
 $('levelsBtn').addEventListener('click',openMenu);
-$('nextBtn').addEventListener('click',()=>startLevel(Math.min(li+1,LEVELS.length-1)));
+$('nextBtn').addEventListener('click',()=>{
+  const n=Math.min(li+1,LEVELS.length-1);
+  if(!avail(n)){ const need=buyLevel(n); if(need){ $('doneEarn').textContent=`You need ${need} more coins to unlock ${LEVELS[n].name}.`; return; } }
+  startLevel(n);
+});
 $('replayBtn').addEventListener('click',()=>startLevel(li));
 $('doneLevelsBtn').addEventListener('click',openMenu);
 
 /* ---------- Coins & shop ---------- */
 let shopFrom='menu';
 function updateCoins(){ ['hudCoins','menuCoins','shopCoins'].forEach(id=>{ const el=$(id); if(el) el.textContent=save.coins; }); }
-function openShop(from){ shopFrom=from; $('menu').hidden=true; $('done').hidden=true; renderShop(); $('shop').hidden=false; $('shopClose').focus({preventScroll:true}); }
+function openShop(from){ stopAutoNext(); shopFrom=from; $('menu').hidden=true; $('done').hidden=true; renderShop(); $('shop').hidden=false; $('shopClose').focus({preventScroll:true}); }
 function closeShop(){ $('shop').hidden=true; if(shopFrom==='done') $('done').hidden=false; else { renderMenu(); $('menu').hidden=false; } }
 function buy(it, kind){
   const owned=has(it.id);
@@ -1000,6 +1243,13 @@ function drawPreview(t){
   ctx=oc; p=op;
 }
 $('shopBtn').addEventListener('click',()=>openShop('menu'));
+$('menuBuyNo').addEventListener('click',()=>{ armed=-1; $('menuBuy').hidden=true; renderMenu(); });
+$('menuBuyYes').addEventListener('click',()=>{
+  const i=armed; if(i<0) return;
+  const need=buyLevel(i);
+  if(need){ $('menuBuy').hidden=true; armed=-1; $('menuMsg').textContent=`You need ${need} more coins for ${LEVELS[i].name}. Beat or replay levels to earn coins.`; renderMenu(); return; }
+  armed=-1; $('menuBuy').hidden=true; startLevel(i);
+});
 $('doneShopBtn').addEventListener('click',()=>openShop('done'));
 $('shopClose').addEventListener('click',closeShop);
 
@@ -1058,6 +1308,16 @@ function hiss(t,dur,vol,hp,dest){
   s.connect(fl); fl.connect(g); g.connect(dest); s.start(t); s.stop(t+dur+.03);
 }
 const TRACKS={
+  cosmic:{name:'Star Drift', bpm:96, wave:'triangle', lv:.13,
+    lead:seq(`E5 B4 G5 B4 E5 B4 F#5 B4 E5 B4 G5 B4 A5 B4 G5 F#5
+              C5 G4 E5 G4 C5 G4 D5 G4 C5 G4 E5 G4 G5 E5 D5 C5
+              A4 E5 C5 E5 A4 E5 B4 E5 A4 E5 C5 E5 E5 D5 C5 B4
+              B4 F#5 D#5 F#5 B4 F#5 E5 F#5 B4 . D#5 . F#5 . B5 .`),
+    bass:seq(`E2 . . . E3 . . . E2 . . . E3 . . .
+              C2 . . . C3 . . . C2 . . . C3 . . .
+              A1 . . . A2 . . . A1 . . . A2 . . .
+              B1 . . . B2 . . . B1 . . . B2 . . .`),
+    drums:{K:'x.......x.......', S:'....x.......x...', h:'..x...x...x...x.'}},
   handpan:{name:'Handpan Calm', bpm:70, wave:'pan', lv:.32,
     lead:seq(`Bb3+D4 . D4+F4 . A4+F4 . D4+Bb3 . A3+Bb3 . D3+A3 . A4+D5 . . .
               Bb3+D4 . D4+F4 . A4+F4 . D4+Bb3 . A3+Bb3 . D3+A3 . A4+D5 . . .
@@ -1101,8 +1361,8 @@ const TRACKS={
               B1 . B1 B2 B1 . B1 B2 B1 . B1 B2 B1 . B1 B2`),
     drums:{K:'x.....x.x.......', S:'....x.......x...', h:'xxxxxxxxxxxxxxxx'}}
 };
-const LEVEL_TRACK=['handpan','masala','neon','handpan','lava','masala','handpan','lava'];
-const MUSIC_ORDER=['auto','handpan','masala','neon','lava','off'];
+const LEVEL_TRACK=['handpan','masala','neon','handpan','lava','masala','handpan','lava','cosmic','cosmic','neon','cosmic','lava','handpan','cosmic','neon','lava'];
+const MUSIC_ORDER=['auto','handpan','cosmic','masala','neon','lava','off'];
 function musicTick(){
   const a=AU.ctx; if(!a||!AU.track) return;
   const tr=TRACKS[AU.track], sp=60/tr.bpm/4, d=AU.music;
