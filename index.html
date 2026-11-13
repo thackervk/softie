@@ -4,8 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Softie: a pixel platformer where a red panda flies around the world, rockets into space and goes through a wormhole.">
-<meta name="theme-color" content="#170b13">
-<title>Softie</title>
+<meta name="theme-color" content="#170b13"><title>Softie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Pixelify+Sans:wght@400;600&family=Noto+Sans+Devanagari:wght@600&display=swap">
@@ -78,6 +77,10 @@ h2{font-weight:700;font-size:24px;color:var(--lava-hi);text-shadow:2px 2px 0 var
 .card.buy .st{color:var(--lava-hi);font-family:var(--display);font-size:11px;letter-spacing:0}
 .card.arm{box-shadow:inset 0 -4px 0 rgba(0,0,0,.3),0 0 0 2px var(--lava-hi)}
 #menuMsg{margin:0}
+#pwBox{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:6px;background:var(--panel-2);box-shadow:0 0 0 2px var(--teal)}
+#pwBox label{font-size:15px}
+#pwInput{flex:2 1 140px;min-width:0;padding:11px 12px;border-radius:6px;border:0;background:var(--bg);color:var(--ink);font-family:var(--display);font-size:15px;letter-spacing:.08em;text-transform:uppercase;box-shadow:inset 0 0 0 2px var(--line)}
+#pwInput:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
 #menuBuy{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:6px;background:var(--panel-2);box-shadow:0 0 0 2px var(--lava-hi)}
 #menuBuy p{margin:0;font-size:15px}
 button{touch-action:manipulation}
@@ -114,10 +117,8 @@ h3{margin:4px 0 0;font-family:var(--display);font-size:12px;letter-spacing:.08em
 .checks .ok{color:var(--teal)}
 .checks .no{color:var(--muted)}
 </style>
-<style>[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}body{margin:0}</style>
-</head>
-<body>
-<div id="app">
+
+<style>[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}body{margin:0}</style></head><body><div id="app">
   <div class="hud">
     <div class="lvl" id="hudLvl"><b>Softie</b></div>
     <div class="stat"><span class="spk">✦</span><span id="hudSpk">0/3</span></div>
@@ -136,15 +137,20 @@ h3{margin:4px 0 0;font-family:var(--display);font-size:12px;letter-spacing:.08em
     <div class="overlay" id="menu">
       <div class="sheet">
         <h1>Softie</h1>
-        <p class="tag">Softie the red panda travels the world, from Auckland's Sky Tower through Samarkand, Ayodhya, the Statue of Unity, a giant Hanuman statue, Diwali, Holi and Kedarnath to Dubai's Burj Khalifa, flying between stops, then blasts off into space to the Moon, Mars, Saturn and through a wormhole (space levels are unlocked with coins). Dodge the lava, skip the spikes and bounce up the walls to reach every door and rocket.</p>
+        <p class="tag">Softie the red panda travels the world, from Auckland's Sky Tower through Samarkand, Ayodhya, the Statue of Unity, a giant Hanuman statue, Diwali, Holi, Kedarnath and Shanghai to Dubai's Burj Khalifa, flying between stops, then blasts off into space to the Moon, Mars, Saturn and through a wormhole (space levels are unlocked with coins). Dodge the lava, skip the spikes and bounce up the walls to reach every door and rocket.</p>
         <div class="levels" id="levels"></div>
         <div id="menuBuy" hidden><p id="menuBuyText"></p><div class="row"><button class="btn primary" id="menuBuyYes">Buy &amp; play</button><button class="btn" id="menuBuyNo">Cancel</button></div></div>
+        <div id="pwBox" hidden>
+          <label for="pwInput">Type a level password</label>
+          <div class="row"><input id="pwInput" type="text" inputmode="text" autocapitalize="characters" spellcheck="false" placeholder="e.g. EIFFEL" maxlength="20"><button class="btn primary" type="button" id="pwGo">Go</button></div>
+        </div>
         <p class="shopmsg" id="menuMsg">Beat Volcano Core to fly to space! Each level you beat unlocks the next. You can also skip ahead in space with coins.</p>
         <div class="row">
           <button class="btn primary" id="shopBtn">Shop · <span id="menuCoins">0</span> coins</button>
           <button class="btn" id="musicMenuBtn">Music: Auto</button>
+          <button class="btn" id="pwBtn">Password</button>
         </div>
-        <p class="how">Phone: hold <kbd>◀</kbd> <kbd>▶</kbd> to run, tap <kbd>JUMP</kbd> for a small hop, hold it for a big one. <kbd>BOOM</kbd> blasts Softie extra high once per jump. Keyboard: arrows or <kbd>A</kbd> <kbd>D</kbd>, <kbd>Space</kbd> to jump, <kbd>X</kbd> to boom, <kbd>R</kbd> restart, <kbd>P</kbd> pause. Tap <kbd>♪</kbd> to change the music and <kbd>PAD</kbd> to show or hide the touch buttons.</p>
+        <p class="how">Phone: hold <kbd>◀</kbd> <kbd>▶</kbd> to run, tap <kbd>JUMP</kbd> for a small hop, hold it for a big one. <kbd>BOOM</kbd> blasts Softie extra high once per jump. Keyboard: arrows or <kbd>A</kbd> <kbd>D</kbd>, <kbd>Space</kbd> to jump, <kbd>X</kbd> to boom, <kbd>R</kbd> restart, <kbd>P</kbd> pause. Use <kbd>Password</kbd> to jump to any level. Tap <kbd>♪</kbd> to change the music and <kbd>PAD</kbd> to show or hide the touch buttons.</p>
       </div>
     </div>
 
@@ -302,6 +308,12 @@ const LEVELS = [
      g.fill(6,20,2,1); g.set(6,19,'K');
      g.fill(6,28,1,2,'>'); g.fill(10,24,1,2,'<'); g.fill(6,14,1,2,'>'); g.fill(10,9,1,2,'<');
      g.set(8,26,'*'); g.set(8,12,'*'); g.set(3,2,'*'); } },
+ { name:"Neon Bund", hint:"Hop across Shanghai's glowing rooftops by the river. Crumbly ledges fall away, so keep moving!", w:74, h:16, spawn:[2,12], exit:[71,11], par:30,
+   pal:{rock:'#4a3a6a', rockHi:'#6a5a92', rockLo:'#2e2446', rockTop:'#ff7ac0', crumble:'#c87ad8', crumbleHi:'#e8a8f0', crumbleLo:'#8a4a9a'},
+   build(g){ g.fill(0,13,9,3); g.fill(12,11,6,5); g.set(14,10,'^'); g.fill(20,12,4,4); g.fill(26,10,3,1,'C');
+     g.fill(31,9,5,7); g.set(32,8,'K'); g.fill(39,11,6,5); g.fill(47,9,3,1,'C');
+     g.fill(52,7,4,9); g.fill(58,10,3,6); g.fill(64,12,10,4);
+     g.set(14,7,'*'); g.set(27,7,'*'); g.set(48,6,'*'); g.set(62,7,'*'); } },
  { name:"Rooftop Run", hint:"Run and jump across Dubai's rooftops to the airport. Don't fall between the buildings!", w:76, h:18, spawn:[2,11], exit:[72,10], par:30,
    pal:{rock:'#7a6a58', rockHi:'#a08a70', rockLo:'#54483a', rockTop:'#d8c4a0', crumble:'#d8b878', crumbleHi:'#f0d898', crumbleLo:'#9a7a48'},
    build(g){ g.fill(0,12,8,6); g.fill(11,10,6,8); g.fill(20,11,4,7); g.set(22,10,'^'); g.fill(27,9,5,9); g.fill(34,9,3,1,'C');
@@ -318,28 +330,20 @@ const LEVELS = [
    build(g){ g.fill(0,14,10,2); g.fill(16,14,8,2); g.fill(30,12,5,4); g.fill(35,14,6,2); g.fill(37,13,2,1,'^');
      g.fill(47,10,3,6); g.fill(50,14,20,2); g.fill(53,13,4,1,'^');
      g.set(12,9,'*'); g.set(32,8,'*'); g.set(48,6,'*'); } },
- { name:"Crater Wall", hint:"Wall-jump up the crater. Floaty jumps make it easier to switch sides.", w:16, h:34, spawn:[7,31], exit:[13,3], par:30, rocket:true, space:true, grav:.6,
-   pal:{rock:'#5c5c66', rockHi:'#7c7c88', rockLo:'#3d3d46', rockTop:'#b4b4c0'},
-   build(g){ g.fill(0,0,11,1); g.fill(0,4,5,28); g.fill(11,4,5,28); g.fill(0,32,16,2);
-     g.fill(5,22,1,2,'>'); g.fill(10,14,1,2,'<'); g.fill(5,8,1,2,'>');
-     g.set(8,20,'*'); g.set(8,10,'*'); g.set(2,3,'*'); } },
- { name:"Asteroid Hop", hint:"Hop across floating rocks. Cracked ones crumble, so keep moving!", w:72, h:20, spawn:[2,11], exit:[68,11], par:35, rocket:true, space:true, grav:.6,
-   pal:{rock:'#4b3f3a', rockHi:'#6b5a52', rockLo:'#2f2723', rockTop:'#8f7a6e'},
-   build(g){ g.fill(0,12,6,2); g.fill(9,11,3,1); g.fill(15,9,3,1); g.fill(21,12,2,1,'C'); g.fill(26,10,3,1);
-     g.fill(32,8,2,1); g.fill(37,11,4,1); g.set(38,10,'K'); g.fill(44,9,3,1,'C'); g.fill(50,7,3,1); g.fill(56,10,3,1); g.fill(62,12,10,2);
-     g.set(18,6,'*'); g.set(35,5,'*'); g.set(53,4,'*'); } },
  { name:"Red Planet", hint:"Mars has lava pits. Use the rocks and crumbly ledges to cross.", w:72, h:14, spawn:[2,11], exit:[69,11], par:30, rocket:true, space:true, grav:.75,
    pal:{rock:'#8a3b22', rockHi:'#b0532f', rockLo:'#5e2414', rockTop:'#d47a4a'},
    build(g){ g.fill(0,12,6,2); g.fill(6,12,60,2,'L'); g.fill(66,12,6,2);
      g.fill(9,11,2,3); g.fill(14,10,2,4); g.fill(19,11,2,3); g.fill(23,10,3,1,'C'); g.fill(28,9,2,5); g.fill(33,10,3,1,'C');
      g.fill(38,11,2,3); g.set(38,10,'K'); g.fill(43,9,2,5); g.fill(48,10,3,1,'C'); g.fill(53,8,2,6); g.fill(58,10,3,1,'C'); g.fill(63,11,2,3);
      g.set(16,7,'*'); g.set(35,7,'*'); g.set(55,5,'*'); } },
- { name:"Ice Moon", hint:"Sneak under the ice wall, then wall-jump past the ice spikes.", w:60, h:22, spawn:[2,19], exit:[57,3], par:35, rocket:true, space:true, grav:.7,
-   pal:{rock:'#3c6c8c', rockHi:'#5e93b5', rockLo:'#244a63', rockTop:'#bfe6ff', spike:'#f2fbff', spikeLo:'#8cc4e0'},
-   build(g){ g.fill(0,20,40,2); g.fill(8,19,2,1,'^'); g.fill(14,19,2,1,'^'); g.fill(20,19,2,1,'^');
-     g.fill(29,4,2,14); g.fill(36,4,2,16); g.fill(38,4,22,1);
-     g.fill(31,12,1,2,'>'); g.fill(35,8,1,2,'<'); g.set(44,3,'^'); g.set(50,3,'^');
-     g.set(15,16,'*'); g.set(33,10,'*'); g.set(53,1,'*'); } },
+ { name:"Acid Clouds", hint:"Venus is boiling hot! Sharp rocks hang from above and bubbling acid pools wait below. Small hops on the tall boxes!", w:70, h:14, spawn:[2,11], exit:[67,11], par:30, rocket:true, space:true, grav:.85,
+   pal:{rock:'#8a6a3a', rockHi:'#a8844a', rockLo:'#5a4424', rockTop:'#d8b060', lava:'#b8d82a', lavaHi:'#e8ff7a', lavaTop:'#fffff0'},
+   build(g){ g.fill(0,0,64,5); g.fill(0,12,70,2);
+     for(let x=12;x<64;x++){ if((x>=33&&x<=37)) continue; g.set(x,5,'v'); }
+     g.fill(22,12,3,2,'L'); g.fill(44,12,3,2,'L');
+     g.set(8,11,'^'); g.fill(34,11,2,1,'^'); g.set(56,11,'^');
+     g.fill(15,10,2,2); g.fill(27,9,2,3); g.fill(40,10,2,2); g.fill(50,9,2,3); g.fill(61,10,2,2);
+     g.set(37,11,'K'); g.set(16,9,'*'); g.set(28,7,'*'); g.set(59,8,'*'); } },
  { name:"Saturn's Rings", hint:"The ring rocks crumble the moment you land. Bounce quickly from one to the next!", w:80, h:18, spawn:[2,11], exit:[77,10], par:40, rocket:true, space:true, grav:.6,
    pal:{rock:'#5a4a6e', rockHi:'#7d6896', rockLo:'#3a2e48', rockTop:'#b8a3d6', crumble:'#c9b48a', crumbleHi:'#efdcae', crumbleLo:'#7d6a48'},
    build(g){ g.fill(0,12,6,2);
@@ -349,14 +353,22 @@ const LEVELS = [
      g.fill(51,10,2,1,'C'); g.fill(55,8,2,1,'C'); g.fill(59,6,2,1,'C'); g.fill(63,8,2,1,'C'); g.fill(67,10,3,1,'C');
      g.fill(72,11,8,2);
      g.set(16,6,'*'); g.set(40,4,'*'); g.set(61,3,'*'); } },
- { name:"Space Station", hint:"Spikes on the ceiling and glowing plasma on the floor. Small hops on the tall boxes!", w:70, h:14, spawn:[2,11], exit:[67,11], par:30, rocket:true, space:true, grav:.85,
-   pal:{rock:'#3e4652', rockHi:'#5c6878', rockLo:'#262c34', rockTop:'#8fa3b8', lava:'#2fcf78', lavaHi:'#8ff0b4', lavaTop:'#e0ffe9'},
-   build(g){ g.fill(0,0,64,5); g.fill(0,12,70,2);
-     for(let x=12;x<64;x++){ if((x>=33&&x<=37)) continue; g.set(x,5,'v'); }
-     g.fill(22,12,3,2,'L'); g.fill(44,12,3,2,'L');
-     g.set(8,11,'^'); g.fill(34,11,2,1,'^'); g.set(56,11,'^');
-     g.fill(15,10,2,2); g.fill(27,9,2,3); g.fill(40,10,2,2); g.fill(50,9,2,3); g.fill(61,10,2,2);
-     g.set(37,11,'K'); g.set(16,9,'*'); g.set(28,7,'*'); g.set(59,8,'*'); } },
+ { name:"Jupiter's Icy Moon", hint:"Sneak under the ice wall, then wall-jump past the ice spikes.", w:60, h:22, spawn:[2,19], exit:[57,3], par:35, rocket:true, space:true, grav:.7,
+   pal:{rock:'#3c6c8c', rockHi:'#5e93b5', rockLo:'#244a63', rockTop:'#bfe6ff', spike:'#f2fbff', spikeLo:'#8cc4e0'},
+   build(g){ g.fill(0,20,40,2); g.fill(8,19,2,1,'^'); g.fill(14,19,2,1,'^'); g.fill(20,19,2,1,'^');
+     g.fill(29,4,2,14); g.fill(36,4,2,16); g.fill(38,4,22,1);
+     g.fill(31,12,1,2,'>'); g.fill(35,8,1,2,'<'); g.set(44,3,'^'); g.set(50,3,'^');
+     g.set(15,16,'*'); g.set(33,10,'*'); g.set(53,1,'*'); } },
+ { name:"Ice Giant Climb", hint:"Uranus spins on its side! Wall-jump up the icy cliff and dodge the icicles.", w:16, h:34, spawn:[7,31], exit:[13,3], par:30, rocket:true, space:true, grav:.6,
+   pal:{rock:'#4a8a9a', rockHi:'#6ab0c0', rockLo:'#2a5a68', rockTop:'#c8f4ff', spike:'#f2fbff', spikeLo:'#8cc4e0'},
+   build(g){ g.fill(0,0,11,1); g.fill(0,4,5,28); g.fill(11,4,5,28); g.fill(0,32,16,2);
+     g.fill(5,22,1,2,'>'); g.fill(10,14,1,2,'<'); g.fill(5,8,1,2,'>');
+     g.set(8,20,'*'); g.set(8,10,'*'); g.set(2,3,'*'); } },
+ { name:"Windy Neptune", hint:"Neptune has the fastest winds in the solar system! The wind pushes you back while you jump. Cracked ice crumbles!", wind:-35, w:72, h:20, spawn:[2,11], exit:[68,11], par:35, rocket:true, space:true, grav:.6,
+   pal:{rock:'#2a4a8a', rockHi:'#4a6ab0', rockLo:'#18305a', rockTop:'#a8c8ff', crumble:'#8ab0e8', crumbleHi:'#c8dcff', crumbleLo:'#4a6aa0'},
+   build(g){ g.fill(0,12,6,2); g.fill(9,11,3,1); g.fill(15,9,3,1); g.fill(21,12,2,1,'C'); g.fill(26,10,3,1);
+     g.fill(32,8,2,1); g.fill(37,11,4,1); g.set(38,10,'K'); g.fill(44,9,3,1,'C'); g.fill(50,7,3,1); g.fill(56,10,3,1); g.fill(62,12,10,2);
+     g.set(18,6,'*'); g.set(35,5,'*'); g.set(53,4,'*'); } },
  { name:"Sun Escape", hint:"Solar plasma is rising! Climb to the rocket and fly home.", w:24, h:50, spawn:[4,47], exit:[11,11], par:60, rocket:true, space:true, grav:.8, lava:{speed:0.007, delay:6},
    pal:{rock:'#4a2a22', rockHi:'#6e3e30', rockLo:'#2e1914', rockTop:'#a8644a', lava:'#ffb81f', lavaHi:'#ffe66a', lavaTop:'#ffffff'},
    build(g){ g.fill(0,0,24,1); g.fill(0,0,2,50); g.fill(22,0,2,50); g.fill(0,48,24,2);
@@ -422,8 +434,16 @@ if(!save.v4){ const sh=a=>{ const o={}; Object.keys(a||{}).forEach(k=>{ o[+k>=10
 if(!save.v5){ const sh=a=>{ const o={}; Object.keys(a||{}).forEach(k=>{ o[+k>=12?+k+3:+k]=a[k]; }); return o; };
   const st=save.stars||[]; save.stars=st.slice(0,12).concat([undefined,undefined,undefined],st.slice(12)); save.bought=sh(save.bought);
   if(save.unlocked>12) save.unlocked+=3; save.v5=1; persist(); }
-for(let i=16;i<save.unlocked;i++) save.bought[i]=1;
-const SPACE_START=16, spacePrice=i=>100+(i-SPACE_START)*25;
+if(!save.v6){ const M={16:16,17:17,18:22,19:23,20:18,21:21,22:20,23:19,24:24,25:25,26:26};
+  const st=save.stars||[], ns=st.slice(0,16), nb={}; Object.keys(save.bought||{}).forEach(k=>{ nb[M[k]!==undefined?M[k]:k]=save.bought[k]; });
+  for(let k=16;k<=26;k++) if(st[k]!==undefined) ns[M[k]]=st[k];
+  if(save.unlocked>16){ let mx=16; for(let k=16;k<Math.min(27,save.unlocked);k++) mx=Math.max(mx,M[k]+1); save.unlocked=mx; }
+  save.stars=ns; save.bought=nb; save.v6=1; persist(); }
+if(!save.v7){ const sh=a=>{ const o={}; Object.keys(a||{}).forEach(k=>{ o[+k>=15?+k+1:+k]=a[k]; }); return o; };
+  const st=save.stars||[]; save.stars=st.slice(0,15).concat([undefined],st.slice(15)); save.bought=sh(save.bought);
+  if(save.unlocked>15) save.unlocked+=1; save.v7=1; persist(); }
+for(let i=17;i<save.unlocked;i++) save.bought[i]=1;
+const SPACE_START=17, spacePrice=i=>100+(i-SPACE_START)*25;
 const avail=i=> i<save.unlocked || !!save.bought[i];
 function buyLevel(i){ const pr=spacePrice(i); if(save.coins<pr){ sfx('no'); return pr-save.coins; } save.coins-=pr; save.bought[i]=1; persist(); sfx('buy'); updateCoins(); return 0; }
 const ABILITIES=[
@@ -563,7 +583,7 @@ function step(dt){
   }
 
   const wasGround=p.ground, vyBefore=p.vy;
-  p.x+=p.vx*dt; collideX();
+  p.x+=(p.vx+(!p.ground&&L.def.wind?L.def.wind:0))*dt; collideX();
   p.ground=false; p.y+=p.vy*dt; collideY();
   if(p.ground && !wasGround && vyBefore>320){ p.sq=Math.min(1,vyBefore/700); emit(p.x+PW/2,p.y+PH,5,{c:['#86606a','#5b3f49'],sp:60,ang:-Math.PI/2,spread:Math.PI*1.2,life:.3,s:3,g:300}); }
   if(p.ground) p.cut=false;
@@ -664,7 +684,7 @@ function win(){
   persist();
   const winLi=li; setTimeout(()=>{ if(mode!=='win'||li!==winLi) return;
     const last=li===LEVELS.length-1;
-    $('doneTitle').textContent= last ? 'Softie made it through the wormhole!' : li===24 ? 'Galaxy explored! A wormhole just opened...' : li===15 ? 'World trip done! Next stop: space!' : 'Level clear!';
+    $('doneTitle').textContent= last ? 'Softie made it through the wormhole!' : li===25 ? 'Galaxy explored! A wormhole just opened...' : li===16 ? 'World trip done! Next stop: space!' : 'Level clear!';
     if(!L.def.rocket){ const lv=LIVERIES[li%LIVERIES.length], to=SCENES[li+1]?SCENES[li+1].place:'home';
       $('doneFlight').innerHTML=`✈ ${lv.name.toUpperCase()} · FLIGHT ${lv.no}<br>TO ${to.toUpperCase()} · <b>BOARDED</b>`; $('doneFlight').hidden=false; }
     else { const to=SCENES[li+1]?SCENES[li+1].place:'home to Earth';
@@ -676,7 +696,8 @@ function win(){
       `<li><span>${L.def.rocket?'Reached the rocket':'Caught the plane'}</span><span class="ok">Yes</span></li>`+
       `<li><span>Sparks found</span><span class="${allSparks?'ok':'no'}">${got}/${L.sparks.length}</span></li>`+
       `<li><span>Time (beat ${fmt(L.def.par)})</span><span class="${fast?'ok':'no'}">${fmt(time)}</span></li>`+
-      `<li><span>Tries lost</span><span class="no">${deaths}</span></li>`;
+      `<li><span>Tries lost</span><span class="no">${deaths}</span></li>`+
+      (CODES[li+1]?`<li><span>Next level password</span><span class="ok">${CODES[li+1]}</span></li>`:'');
     $('nextBtn').hidden=last;
     if(!last){ const n=li+1; $('nextBtn').textContent= avail(n)?'Next level':`Unlock next · ● ${spacePrice(n)}`; }
     if(L.def.rocket && !last){ let c=3; const tick=()=>{ if(c<=0){ autoNext=0; startLevel(li+1); return; } $('nextBtn').textContent=`Next level in ${c}`; c--; autoNext=setTimeout(tick,1000); }; tick(); }
@@ -784,7 +805,7 @@ function drawCheckpoint(k,t){
   } else { ctx.fillStyle='#5d4650'; ctx.fillRect(x+14,y+8,4,4); }
 }
 let launchT=0, autoNext=0, portalCd=0;
-const ROCKETS=['Saturn V-style · NASA','Soyuz-style · Roscosmos','Falcon 9-style · SpaceX','Starship-style · SpaceX','New Shepard-style · Blue Origin','Electron-style · Rocket Lab','Atlas V-style · ULA','LVM3-style · ISRO','Ariane 5-style · Arianespace','Long March 5-style · CASC','H3-style · JAXA'];
+const ROCKETS=['Saturn V-style · NASA','Soyuz-style · Roscosmos','Falcon 9-style · SpaceX','Space Shuttle-style · NASA','New Shepard-style · Blue Origin','Electron-style · Rocket Lab','Atlas V-style · ULA','LVM3-style · ISRO','Ariane 5-style · Arianespace','Long March 5-style · CASC','H3-style · JAXA'];
 const rocketStyle=()=>Math.max(0,Math.min(ROCKETS.length-1,li-SPACE_START));
 function ln2(x1,y1,x2,y2,c){ ctx.strokeStyle=c; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); }
 const PORTAL_COL={A:'#b06cff',B:'#3fe0d0',D:'#ff6fb5'};
@@ -861,15 +882,17 @@ function drawRocket(t){
     body(-6,-64,12,60,W,WS); R(K,-6,-66,12,6); R('#555b66',-8.5,-64,2.5,3); R('#555b66',6,-64,2.5,3);
     body(-6,-84,12,18,W,WS); body(-7,-100,14,16,W,WS); nose(-7,-100,14,12,W,WS);
     face(0,-92); hatch(-16); break; }
-  case 3: { // Starship style: stainless steel with flaps
-    const ss='#c9ced6', sd='#9aa1ab';
-    bells([-4,0,4],-4,'#2a2a30');
-    tri(-9,-30,-9,-6,-16,-4,'#2a2a30'); tri(9,-30,9,-6,16,-4,'#2a2a30');
-    body(-9,-100,18,96,ss,sd); R('#2a2a30',-9,-100,5,96);
-    for(let k=-92;k<-6;k+=9) R('rgba(0,0,0,.12)',-9,k,18,.8);
-    ctx.fillStyle=ss; ctx.beginPath(); ctx.moveTo(-9,-100); ctx.quadraticCurveTo(-8,-114,0,-120); ctx.quadraticCurveTo(8,-114,9,-100); ctx.closePath(); ctx.fill();
-    tri(-9,-104,-9,-94,-14,-95,'#2a2a30'); tri(9,-104,9,-94,14,-95,'#2a2a30');
-    face(2,-98); hatch(-17); break; }
+  case 3: { // Space Shuttle style: orange external tank, two white boosters, orbiter
+    const et='#d9772a', ets='#a8561a';
+    bells([-12,-4],-4);
+    body(-15,-82,6,78,W,WS); nose(-15,-82,6,8,W,WS); R(K,-15,-10,6,2);
+    body(-8,-92,15,88,et,ets); ctx.fillStyle=et; ctx.beginPath(); ctx.moveTo(-8,-92); ctx.quadraticCurveTo(-7,-104,-.5,-108); ctx.quadraticCurveTo(6,-104,7,-92); ctx.closePath(); ctx.fill();
+    for(let k=-86;k<-8;k+=10) R('rgba(0,0,0,.12)',-8,k,15,.8);
+    body(7,-74,9,64,W,WS); R(K,7,-30,2,20);
+    ctx.fillStyle=W; ctx.beginPath(); ctx.moveTo(7,-74); ctx.quadraticCurveTo(10,-84,12,-86); ctx.quadraticCurveTo(15,-82,16,-74); ctx.closePath(); ctx.fill();
+    R(K,8,-80,7,3); R('#2b3a63',9,-79.4,2,1.6); R('#2b3a63',12,-79.4,2,1.6);
+    tri(16,-40,16,-12,26,-10,WS); tri(16,-14,16,-4,22,-2,K); bells([10,14],-10,'#2a2a30');
+    face(11.5,-66); hatch(-16); break; }
   case 4: { // New Shepard style: short booster with ring fin and capsule
     tri(-8,-14,-8,-2,-14,0,WS); tri(8,-14,8,-2,14,0,WS); bells([0],-4);
     body(-8,-58,16,54,W,WS); R('#3a3f4a',-10,-58,20,3); tri(-10,-58,-6,-58,-8,-66,WS); tri(6,-58,10,-58,8,-66,WS);
@@ -934,7 +957,8 @@ const LIVERIES=[
   {name:'Diya Airways', no:1313, body:'#f4f5f7', belly:'#1e1a4a', stripe:'#e8a040', tail:'#1e1a4a', accent:'#ffd24a', eng:'#e8a040'},
   {name:'Rangoli Air', no:1414, body:'#f4f5f7', belly:'#f4f5f7', stripe:'#ff4fa0', tail:'#b06cff', accent:'#ffd23a', eng:'#4fc8ff'},
   {name:'Mahadev Air', no:1515, body:'#f4f5f7', belly:'#c8ccd4', stripe:'#3a6ab0', tail:'#2a3a5a', accent:'#f2f6ff', eng:'#2a3a5a'},
-  {name:'Golden Dune Air', no:1616, body:'#f4f5f7', belly:'#c8ccd4', stripe:'#8a1a2a', tail:'#8a1a2a', accent:'#d8b45a', eng:'#d8b45a'}];
+  {name:'Pearl Dragon Air', no:1616, body:'#f4f5f7', belly:'#f4f5f7', stripe:'#d8283a', tail:'#d8283a', accent:'#ffd24a', eng:'#c8ccd4'},
+  {name:'Golden Dune Air', no:1717, body:'#f4f5f7', belly:'#c8ccd4', stripe:'#8a1a2a', tail:'#8a1a2a', accent:'#d8b45a', eng:'#d8b45a'}];
 function drawPlane(t){
   const [ex,ey]=L.def.exit, base=(ey+1)*T, lv=LIVERIES[li%LIVERIES.length], go=mode==='win';
   let mx=0,my=0;
@@ -1314,6 +1338,28 @@ const SCENES=[
    ctx.fillStyle=st; ctx.beginPath(); ctx.ellipse(x+9*u,y-53*u,5.4*u,1.8*u,0,0,7); ctx.fill();
    poly(x,y,u,[[7.6,54.5],[10.4,54.5],[9,60]],'#e2b94a');
    ln(x,y,u,9,60,9,68,'#5a4a32',.4); const wv=Math.sin(t*3)*1.2; poly(x,y,u,[[9,68],[9,64],[16,66+wv]],'#ff8a1a'); }},
+ {place:'Shanghai, China', top:'#1a1440', mid:'#6a3a8a', bot:'#ff9a7a', far:'#4a3a6a', near:'#2a2440', sun:[.16,.72,.035,'#ffe8d0'], mote:'255,170,220', lx:.5,
+  draw(x,y,u,t){
+   [[-84,0,8,24],[-74,0,7,34],[-30,0,7,26],[46,0,7,38],[58,0,8,28],[70,0,9,20]].forEach(([a,b,w,h],i)=>{ box(x,y,u,a,b,w,h,i%2?'#3a3460':'#2e2850'); windows(x,y,u,a,b,w,h,'#463e70','#ffb0e0'); });
+   const cn='#d8d0e8', cs='#a8a0c0', pk='#e0508a', pd='#a8306a';
+   ln(x,y,u,-60,0,-50,24,cs,1.4); ln(x,y,u,-40,0,-50,24,cs,1.4); ln(x,y,u,-50,0,-50,20,cs,1.4);
+   box(x,y,u,-54,0,1.8,92,cn); box(x,y,u,-47.8,0,1.8,92,cn); box(x,y,u,-51,10,2,96,cs);
+   [[-50,30,9],[-50,76,6],[-50,94,2.6]].forEach(([a,b,r])=>{ ctx.fillStyle=pk; ctx.beginPath(); ctx.arc(x+a*u,y-b*u,r*u,0,7); ctx.fill();
+     ctx.fillStyle=pd; ctx.beginPath(); ctx.arc(x+a*u,y-b*u,r*u,-.6,1.4); ctx.lineTo(x+a*u,y-b*u); ctx.fill();
+     ctx.fillStyle='rgba(255,220,240,.7)'; ctx.fillRect(x+(a-r*.5)*u,y-(b+r*.4)*u,Math.max(1,r*.3*u),Math.max(1,r*.3*u)); });
+   [[-58,6],[-42,6]].forEach(([a,b])=>{ ctx.fillStyle=pk; ctx.beginPath(); ctx.arc(x+a*u,y-b*u,2.4*u,0,7); ctx.fill(); });
+   box(x,y,u,-51.5,40,3,6,cn); box(x,y,u,-51,82,2,8,cn); ln(x,y,u,-50,96,-50,112,cs,.5);
+   const jm='#b8b0a0', js='#8a8274';
+   [[-22,0,14,40],[-21,40,12,10],[-20,50,10,8],[-19,58,8,7],[-18,65,6,6],[-17,71,4,6]].forEach(([a,b,w,h])=>{ box(x,y,u,a,b,w,h,jm); box(x,y,u,a+w*.6,b,w*.4,h,js); box(x,y,u,a-.6,b+h-1,w+1.2,1,'#6a6458'); });
+   ln(x,y,u,-15,77,-15,90,jm,.5);
+   poly(x,y,u,[[2,0],[20,0],[19,50],[16,96],[13,118],[10,128],[6,118],[4,96],[3,50]],'#a8c8d8');
+   poly(x,y,u,[[11,0],[20,0],[19,50],[16,96],[13,118],[10,128],[11,96]],'#7a98b0');
+   for(let b=6;b<120;b+=6){ const w=18-b*.105; box(x,y,u,11-w/2,b,w,.4,'rgba(60,80,110,.5)'); }
+   poly(x,y,u,[[26,0],[38,0],[37,96],[27,100]],'#c0ccd8'); poly(x,y,u,[[32,0],[38,0],[37,96],[32,98]],'#909eb0');
+   poly(x,y,u,[[28.5,88],[35.5,86.5],[35,92],[29,93.5]],'#7a4a8a');
+   for(let b=6;b<84;b+=5) box(x,y,u,27,b,10,.4,'rgba(70,80,110,.45)');
+   ctx.fillStyle=(t%1.2)<.6?'#ff4060':'#7a2030'; ctx.fillRect(x+9.3*u,y-129.4*u,1.4*u,1.4*u);
+   for(let k=-90;k<=90;k+=5){ const fl=.5+.5*Math.sin(t*2+k*.3); ctx.fillStyle=`rgba(${200+fl*55|0},${90+fl*60|0},255,${.35+fl*.3})`; ctx.fillRect(x+k*u,y-1.5*u,2.5*u,.8*u); } }},
  {place:'Dubai, UAE', top:'#2a3a6a', mid:'#d88a6a', bot:'#ffd8a0', far:'#c89a6a', near:'#a87a4a', sun:[.8,.62,.05,'#fff0c0'], mote:'255,230,190', lx:.45,
   draw(x,y,u,t){
    [[-60,0,8,26],[-50,0,6,38],[-42,0,7,22],[24,0,8,34],[34,0,6,44],[42,0,9,28],[54,0,7,20]].forEach(([a,b,w,h],i)=>{ box(x,y,u,a,b,w,h,i%2?'#4a5a7a':'#3a4866'); windows(x,y,u,a,b,w,h,'#5a6a8a','#ffd88a'); });
@@ -1348,20 +1394,6 @@ const SCENES=[
    box(x,y,u,-9,0,1.2,9,'#9aa0aa'); box(x,y,u,8,0,1.2,9,'#9aa0aa'); ln(x,y,u,-8,9,-12,0,'#9aa0aa',.6); ln(x,y,u,9,9,13,0,'#9aa0aa',.6);
    box(x,y,u,-8,8,17,8,'#d8a632'); box(x,y,u,3,8,6,8,'#b08420'); box(x,y,u,-6,16,13,7,'#c8ccd4'); box(x,y,u,-3,18,4,3,'#2b3a63');
    ln(x,y,u,4,23,6,29,'#c8ccd4',.4); ctx.fillStyle='#ff5050'; ctx.fillRect(x+5.6*u,y-29.6*u,u,u); }},
- {place:'Moon Crater', top:'#02030a', bot:'#10121f', stars:true, far:'#3e3e48', near:'#5a5a64', mote:'220,225,255', lx:.5,
-  draw(x,y,u){
-   ctx.fillStyle='#d8e6ff'; ctx.beginPath(); ctx.arc(x+40*u,y-90*u,9*u,0,7); ctx.fill();
-   ctx.fillStyle='#02030a'; ctx.beginPath(); ctx.arc(x+43.5*u,y-91*u,8.4*u,0,7); ctx.fill();
-   poly(x,y,u,[[-80,0],[-60,16],[-40,22],[-20,10],[20,10],[40,22],[60,16],[80,0]],'#707080');
-   poly(x,y,u,[[-40,22],[-20,10],[20,10],[40,22],[30,18],[-30,18]],'#9a9aa8');
-   ctx.fillStyle='rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(x,y-11*u,22*u,3*u,0,0,7); ctx.fill(); }},
- {place:'Asteroid Belt', top:'#05030c', bot:'#1a1030', stars:true, noLayers:true, mote:'200,190,255', lx:.5,
-  draw(x,y,u,t){
-   [[-60,40,9],[-25,75,14],[15,30,7],[45,62,12],[75,20,6],[-80,90,5],[30,100,8]].forEach(([a,b,r],i)=>{
-     const bx=x+a*u, by=y-(b+Math.sin(t*.6+i)*2)*u, R=r*u;
-     ctx.fillStyle='#4b3f3a'; ctx.beginPath(); ctx.ellipse(bx,by,R,R*.8,i,0,7); ctx.fill();
-     ctx.fillStyle='#6b5a52'; ctx.beginPath(); ctx.ellipse(bx-R*.25,by-R*.2,R*.55,R*.4,i,0,7); ctx.fill();
-     ctx.fillStyle='#2f2723'; ctx.beginPath(); ctx.arc(bx+R*.3,by+R*.15,R*.22,0,7); ctx.fill(); ctx.beginPath(); ctx.arc(bx-R*.35,by+R*.3,R*.14,0,7); ctx.fill(); }); }},
  {place:'Mars', top:'#3a1a14', mid:'#8a3f24', bot:'#e08a5a', far:'#9a4a2a', near:'#6a2a18', sun:[.78,.3,.025,'#fff0d8'], mote:'255,190,150', lx:.4,
   draw(x,y,u){
    ctx.fillStyle='#a89a90'; ctx.beginPath(); ctx.arc(x-30*u,y-95*u,3*u,0,7); ctx.fill(); ctx.beginPath(); ctx.arc(x+60*u,y-80*u,2*u,0,7); ctx.fill();
@@ -1369,15 +1401,13 @@ const SCENES=[
    [-8,0,8].forEach(a=>{ ctx.fillStyle='#2a2a30'; ctx.beginPath(); ctx.arc(x+a*u,y-2.5*u,2.6*u,0,7); ctx.fill(); ctx.fillStyle='#6a6a74'; ctx.beginPath(); ctx.arc(x+a*u,y-2.5*u,1*u,0,7); ctx.fill(); });
    box(x,y,u,5,10,1.2,12,'#c8c2b8'); box(x,y,u,3,22,5,3,'#e8e2d8'); ctx.fillStyle='#2b3a63'; ctx.fillRect(x+6*u,y-24.5*u,1.6*u,1.6*u);
    box(x,y,u,-8,10,7,.8,'#3a5a9a'); ln(x,y,u,-4.5,10.8,-4.5,13,'#c8c2b8',.4); box(x,y,u,-9,13,9,3,'#2a4a8a'); }},
- {place:'Europa, Moon of Jupiter', top:'#02030a', bot:'#101830', stars:true, far:'#9fc4dc', near:'#d8eef8', mote:'210,235,255', lx:.5,
-  draw(x,y,u){
-   const jx=x+10*u, jy=y-78*u, R=40*u;
-   ctx.save(); ctx.beginPath(); ctx.arc(jx,jy,R,0,7); ctx.clip();
-   ['#efe0c8','#c08a5a','#e6cfa8','#b5714a','#f0e4cc','#c99a6a','#e2c9a0','#a8603e','#e8d6b6'].forEach((c,i)=>{ ctx.fillStyle=c; ctx.fillRect(jx-R,jy-R+i*R*2/9,R*2,R*2/9+1); });
-   ctx.fillStyle='#c0503a'; ctx.beginPath(); ctx.ellipse(jx+R*.35,jy+R*.3,R*.18,R*.1,0,0,7); ctx.fill();
-   ctx.fillStyle='rgba(0,0,15,.45)'; ctx.beginPath(); ctx.arc(jx-R*.55,jy,R,0,7); ctx.fill(); ctx.restore();
-   poly(x,y,u,[[-70,0],[-55,8],[-40,4],[-30,12],[-20,6],[0,4],[30,10],[50,5],[70,0]],'#c4e2f2');
-   [[-50,6],[-25,9],[35,8]].forEach(([a,b])=>poly(x,y,u,[[a-2,b-2],[a+2,b-2],[a,b+6]],'#eaf7ff')); }},
+ {place:'Venus', top:'#b88a3a', mid:'#e0b860', bot:'#f6e0a0', far:'#a07838', near:'#7a5a28', mote:'255,240,180', lx:.5,
+  draw(x,y,u,t){
+   for(let k=0;k<6;k++){ const yy=y-(30+k*14)*u, off=((t*(4+k)*u)%(60*u)); ctx.fillStyle=k%2?'rgba(255,230,160,.35)':'rgba(200,150,70,.3)';
+     for(let j=-3;j<4;j++){ ctx.beginPath(); ctx.ellipse(x+j*60*u+off,yy,34*u,5*u,0,0,7); ctx.fill(); } }
+   poly(x,y,u,[[-70,0],[-40,0],[-50,22],[-58,22]],'#6a4a22'); poly(x,y,u,[[20,0],[60,0],[44,30],[36,30]],'#6a4a22');
+   ctx.fillStyle='rgba(255,120,40,.7)'; ctx.fillRect(x+38*u,y-31*u,4*u,2*u);
+   if((t%5)<.12){ ctx.strokeStyle='#fffbe0'; ctx.lineWidth=1.2*u; ctx.beginPath(); ctx.moveTo(x-20*u,y-100*u); ctx.lineTo(x-14*u,y-80*u); ctx.lineTo(x-22*u,y-70*u); ctx.lineTo(x-12*u,y-50*u); ctx.stroke(); } }},
  {place:"Saturn's Rings", top:'#04030c', bot:'#1a1428', stars:true, noLayers:true, mote:'230,210,255', lx:.55,
   draw(x,y,u){
    const sx=x, sy=y-55*u, R=26*u;
@@ -1389,19 +1419,31 @@ const SCENES=[
    ctx.fillStyle='rgba(0,0,15,.4)'; ctx.beginPath(); ctx.arc(sx+R*.5,sy,R,0,7); ctx.fill(); ctx.restore();
    ring(true);
    [[-70,10,6],[-40,4,4],[60,8,5],[80,14,3]].forEach(([a,b,r])=>{ ctx.fillStyle='#7d6896'; ctx.beginPath(); ctx.arc(x+a*u,y-b*u,r*u,0,7); ctx.fill(); }); }},
- {place:'Space Station', top:'#02030a', bot:'#0b1a3a', stars:true, noLayers:true, mote:'200,220,255', lx:.5,
+ {place:'Europa, Jupiter\'s Icy Moon', top:'#02030a', bot:'#101830', stars:true, far:'#9fc4dc', near:'#d8eef8', mote:'210,235,255', lx:.5,
+  draw(x,y,u){
+   const jx=x+10*u, jy=y-78*u, R=40*u;
+   ctx.save(); ctx.beginPath(); ctx.arc(jx,jy,R,0,7); ctx.clip();
+   ['#efe0c8','#c08a5a','#e6cfa8','#b5714a','#f0e4cc','#c99a6a','#e2c9a0','#a8603e','#e8d6b6'].forEach((c,i)=>{ ctx.fillStyle=c; ctx.fillRect(jx-R,jy-R+i*R*2/9,R*2,R*2/9+1); });
+   ctx.fillStyle='#c0503a'; ctx.beginPath(); ctx.ellipse(jx+R*.35,jy+R*.3,R*.18,R*.1,0,0,7); ctx.fill();
+   ctx.fillStyle='rgba(0,0,15,.45)'; ctx.beginPath(); ctx.arc(jx-R*.55,jy,R,0,7); ctx.fill(); ctx.restore();
+   poly(x,y,u,[[-70,0],[-55,8],[-40,4],[-30,12],[-20,6],[0,4],[30,10],[50,5],[70,0]],'#c4e2f2');
+   [[-50,6],[-25,9],[35,8]].forEach(([a,b])=>poly(x,y,u,[[a-2,b-2],[a+2,b-2],[a,b+6]],'#eaf7ff')); }},
+ {place:'Uranus', top:'#02040a', bot:'#0a1a2a', stars:true, far:'#4a8a9a', near:'#6ab0c0', mote:'210,245,255', lx:.5,
+  draw(x,y,u){
+   const cx=x+5*u, cy=y-72*u, R=26*u;
+   ctx.strokeStyle='rgba(200,240,255,.35)'; ctx.lineWidth=1.4*u; ctx.beginPath(); ctx.ellipse(cx,cy,9*u,44*u,.12,Math.PI*.5,Math.PI*1.5); ctx.stroke();
+   const g=ctx.createRadialGradient(cx-8*u,cy-8*u,4*u,cx,cy,R); g.addColorStop(0,'#c8f4f8'); g.addColorStop(1,'#5ab4c4'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.fill();
+   ctx.strokeStyle='rgba(255,255,255,.18)'; ctx.lineWidth=2*u; for(let k=-1;k<=1;k++){ ctx.beginPath(); ctx.ellipse(cx+k*10*u,cy,2*u,R*.95,.12,0,7); ctx.stroke(); }
+   ctx.strokeStyle='rgba(200,240,255,.55)'; ctx.lineWidth=1.4*u; ctx.beginPath(); ctx.ellipse(cx,cy,9*u,44*u,.12,-Math.PI*.5,Math.PI*.5); ctx.stroke(); }},
+ {place:'Neptune', top:'#01030c', bot:'#0a1440', stars:true, noLayers:true, mote:'180,200,255', lx:.5,
   draw(x,y,u,t){
-   ctx.fillStyle='rgba(90,160,255,.35)'; ctx.beginPath(); ctx.arc(x,y+330*u,346*u,0,7); ctx.fill();
-   ctx.fillStyle='#1f5aa8'; ctx.beginPath(); ctx.arc(x,y+330*u,340*u,0,7); ctx.fill();
-   ctx.fillStyle='#3f8a5a'; ctx.beginPath(); ctx.ellipse(x-40*u,y-2*u,30*u,4*u,0,0,7); ctx.fill();
-   ctx.fillStyle='rgba(255,255,255,.6)'; ctx.fillRect(x+20*u,y-6*u,40*u,1.5*u);
-   const sy=y-70*u;
-   box(x,sy+70*u-y+y,u,0,0,0,0);
-   ctx.fillStyle='#c8ccd4'; ctx.fillRect(x-50*u,sy-1*u,100*u,2*u);
-   [[-46,-1],[-30,1],[30,-1],[46,1]].forEach(([a])=>{ ctx.fillStyle='#22407a'; ctx.fillRect(x+(a-6)*u,sy-16*u,12*u,14*u); ctx.fillRect(x+(a-6)*u,sy+2*u,12*u,14*u);
-     ctx.strokeStyle='#5a7ac0'; ctx.lineWidth=Math.max(.5,.3*u); for(let k=1;k<4;k++){ ctx.beginPath(); ctx.moveTo(x+(a-6+k*3)*u,sy-16*u); ctx.lineTo(x+(a-6+k*3)*u,sy+16*u); ctx.stroke(); } });
-   [[-14,8,5],[-2,10,6],[12,8,5]].forEach(([a,w,h])=>{ ctx.fillStyle='#e8ebf0'; ctx.fillRect(x+(a-w/2)*u,sy-h/2*u,w*u,h*u); ctx.fillStyle='#b4bac4'; ctx.fillRect(x+(a-w/2)*u,sy+(h/2-1.2)*u,w*u,1.2*u); });
-   ctx.fillStyle=(t%1.2)<.6?'#ff5050':'#5a1a1a'; ctx.fillRect(x+49*u,sy-1.5*u,1.5*u,1.5*u); }},
+   const cx=x-10*u, cy=y-70*u, R=30*u;
+   const g=ctx.createRadialGradient(cx-10*u,cy-10*u,4*u,cx,cy,R); g.addColorStop(0,'#5a8aff'); g.addColorStop(1,'#1a3aa8'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.fill();
+   ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.clip();
+   ctx.fillStyle='rgba(20,30,90,.7)'; ctx.beginPath(); ctx.ellipse(cx+6*u,cy+4*u,7*u,4*u,0,0,7); ctx.fill();
+   ctx.fillStyle='rgba(255,255,255,.7)'; ctx.fillRect(cx+2*u,cy-2*u,9*u,1.2*u); ctx.fillRect(cx-16*u,cy-12*u,12*u,1*u); ctx.restore();
+   ctx.strokeStyle='rgba(200,220,255,.35)'; ctx.lineWidth=.8*u;
+   for(let k=0;k<14;k++){ const yy=y-(8+((k*37)%110))*u, xx=x+(((k*53-t*140)%240)+240)%240*u-120*u; ctx.beginPath(); ctx.moveTo(xx,yy); ctx.lineTo(xx+14*u,yy); ctx.stroke(); } }},
  {place:'Near the Sun', top:'#1a0500', mid:'#5a1500', bot:'#ff7a1a', noLayers:true, mote:'255,210,120', lx:.5,
   draw(x,y,u,t){
    const sx=x, sy=y-40*u, R=60*u;
@@ -1562,7 +1604,7 @@ function renderMenu(){
   });
 }
 function openMenu(){
-  stopAutoNext(); armed=-1; $('menuBuy').hidden=true;
+  stopAutoNext(); armed=-1; $('menuBuy').hidden=true; $('pwBox').hidden=true;
   mode='menu'; hideBanner();
   $('pause').hidden=true; $('done').hidden=true;
   const pick=Math.min(save.unlocked-1, LEVELS.length-1);
@@ -1635,6 +1677,21 @@ function drawPreview(t){
   ctx=oc; p=op;
 }
 $('shopBtn').addEventListener('click',()=>openShop('menu'));
+const CODES=['SKYTOWER','EIFFEL','BIGBEN','PYRAMID','OPERA','FUJI','LIBERTY','VOLCANO','SILKROAD','AYODHYA','UNITY','HANUMAN','DIWALI','HOLI','KEDARNATH','SHANGHAI','BURJ','LAUNCH','MOON','MARS','VENUS','SATURN','EUROPA','URANUS','NEPTUNE','SUN','BLACKHOLE','WHITEHOLE'];
+const MASTER_CODE='SOFTIE';
+$('pwBtn').addEventListener('click',()=>{ const b=$('pwBox'); b.hidden=!b.hidden; if(!b.hidden){ $('pwInput').value=''; $('pwInput').focus({preventScroll:true}); b.scrollIntoView({block:'nearest',behavior:'smooth'}); } });
+function tryPassword(){
+  const code=$('pwInput').value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(!code) return;
+  if(code===MASTER_CODE){ save.unlocked=LEVELS.length; for(let i=SPACE_START;i<LEVELS.length;i++) save.bought[i]=1; persist(); sfx('buy');
+    $('pwBox').hidden=true; $('menuMsg').textContent='Master password! Every level is now unlocked.'; renderMenu(); return; }
+  const i=CODES.indexOf(code);
+  if(i<0||i>=LEVELS.length){ sfx('no'); $('menuMsg').textContent=`"${code}" isn't a password. Check the spelling and try again.`; return; }
+  save.unlocked=Math.max(save.unlocked,i+1); if(i>=SPACE_START) save.bought[i]=1; persist(); sfx('buy');
+  $('pwBox').hidden=true; $('menuMsg').textContent=`Password accepted: level ${i+1}, ${LEVELS[i].name}!`; $('pwInput').blur(); startLevel(i);
+}
+$('pwGo').addEventListener('click',e=>{ e.preventDefault(); tryPassword(); });
+$('pwInput').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); tryPassword(); } });
 $('menuBuyNo').addEventListener('click',()=>{ armed=-1; $('menuBuy').hidden=true; renderMenu(); });
 $('menuBuyYes').addEventListener('click',()=>{
   const i=armed; if(i<0) return;
@@ -1868,7 +1925,7 @@ const TRACKS={
               B1 . B1 B2 B1 . B1 B2 B1 . B1 B2 B1 . B1 B2`),
     drums:{K:'x.....x.x.......', S:'....x.......x...', h:'xxxxxxxxxxxxxxxx'}}
 };
-const LEVEL_TRACK=['handpan','masala','neon','handpan','lava','masala','handpan','lava','handpan','mantra','vande','mantra2','mantra3','mantra4','mantra5','masala','cosmic','cosmic','neon','cosmic','lava','handpan','cosmic','neon','lava','cosmic','neon'];
+const LEVEL_TRACK=['handpan','masala','neon','handpan','lava','masala','handpan','lava','handpan','mantra','vande','mantra2','mantra3','mantra4','mantra5','neon','masala','cosmic','cosmic','lava','neon','cosmic','handpan','cosmic','neon','lava','cosmic','neon'];
 const MUSIC_ORDER=['auto','handpan','vande','mantra','mantra2','mantra3','mantra4','mantra5','cosmic','masala','neon','lava','off'];
 function musicTick(){
   const a=AU.ctx; if(!a||!AU.track) return;
@@ -1983,6 +2040,7 @@ document.addEventListener('visibilitychange',()=>{ if(document.hidden) pauseGame
 /* ---------- Input ---------- */
 const keyMap={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',Space:'jump',ArrowUp:'jump',KeyW:'jump',KeyZ:'jump',KeyX:'boom',KeyK:'boom',ShiftLeft:'boom',ShiftRight:'boom'};
 window.addEventListener('keydown',e=>{
+  if(e.target&&e.target.tagName==='INPUT') return;
   const a=keyMap[e.code];
   if(a){
     if(mode==='play'||mode==='dead'){ e.preventDefault(); }
@@ -2054,5 +2112,4 @@ openMenu();
 requestAnimationFrame(frame);
 })();
 </script>
-</body>
-</html>
+</body></html>
